@@ -1,7 +1,6 @@
 using Godot;
 using System.IO;
 using System.Collections.Generic;
-using static Godot.RenderingServer;
 
 [Tool]
 public partial class QuickAtlasEditorWindow : Control
@@ -14,6 +13,8 @@ public partial class QuickAtlasEditorWindow : Control
 
 	[Export]
 	AtlasPreviewControls PreviewControls;
+	[Export]
+	ScrollContainer PreviewContainer;
 
 	[Export]
 	FileDialog FileDialog;
@@ -109,13 +110,43 @@ public partial class QuickAtlasEditorWindow : Control
 
 	public void SetEditTarget(Texture2D target)
 	{
-		undoRedo.CreateAction("QuickAtlas - Change source atlas", UndoRedo.MergeMode.Ends, this);
-		undoRedo.AddDoMethod(this, "SetEditTargetByName", target != null ? target.ResourcePath : "null");
-		undoRedo.AddUndoMethod(this, "SetEditTargetByName", currentBaseTexture != null ? currentBaseTexture.ResourcePath : "null");
-		undoRedo.CommitAction(false);
+		AtlasTexture targetAsAtlas = target as AtlasTexture;
+		if (targetAsAtlas != null)
+		{
+			target = targetAsAtlas.Atlas;
+		}
 
-		SetEditTargetInternal(target);
-	}
+		if (target != currentBaseTexture)
+		{
+			undoRedo.CreateAction("QuickAtlas - Change source atlas", UndoRedo.MergeMode.Ends, this);
+			undoRedo.AddDoMethod(this, "SetEditTargetByName", target != null ? target.ResourcePath : "null");
+			undoRedo.AddUndoMethod(this, "SetEditTargetByName", currentBaseTexture != null ? currentBaseTexture.ResourcePath : "null");
+			undoRedo.CommitAction(false);
+
+			SetEditTargetInternal(target);
+		}
+
+		if (targetAsAtlas != null)
+		{ 
+			for (int i = 0; i < textureEdits.Count; i++)
+			{
+				if (textureEdits[i].actualTexture.ResourcePath == targetAsAtlas.ResourcePath)
+				{
+					SelectedTexture = textureEdits[i];
+
+					// center the selection in the preview area
+					Vector2 previewCenter = PreviewContainer.Size * 0.5f;
+					Vector2 halfSize = SelectedTexture.Region.Size * 0.5f;
+					Vector2 scrollPos = SelectedTexture.Region.Position - (previewCenter - halfSize);
+					PreviewContainer.ScrollHorizontal = (int)scrollPos.X;
+					PreviewContainer.ScrollVertical = (int)scrollPos.Y;
+					return;
+				}
+			}
+        
+			GD.Print("Unable to find edit info for " + targetAsAtlas.ResourcePath);
+        }
+    }
 
 	// this one is for adding a new texture in response to a mouse click
 	public AtlasTextureEdits AddNewTexture(Vector2 position)
@@ -424,9 +455,9 @@ public partial class QuickAtlasEditorWindow : Control
 						textureAtlasRefs[resourcePath] = new List<string>();
 					}
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 
 	private void WalkProjectResources(EditorFileSystemDirectory directory, List<string> output)
 	{
