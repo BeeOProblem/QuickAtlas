@@ -51,7 +51,8 @@ public partial class AtlasPreviewControls : Control
             InputEventMouseButton mouseEvent = (InputEventMouseButton)inputEvent;
             if (mouseEvent.ButtonIndex == MouseButton.Left)
             {
-                GetViewport().SetInputAsHandled();
+                window.GrabFocus();
+                AcceptEvent();
                 QueueRedraw();
 
                 if (mouseEvent.Pressed)

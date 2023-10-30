@@ -34,6 +34,7 @@ public partial class QuickAtlas : EditorPlugin
 	{
         dock.Init(GetEditorInterface(), GetUndoRedo());
         dock.SetEditTarget(target as Texture2D);
+		dock.GrabFocus();
 	}
 }
 #endif

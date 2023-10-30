@@ -84,6 +84,25 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
+	public override void _GuiInput(InputEvent @event)
+	{
+		InputEventKey key = @event as InputEventKey;
+		if (currentBaseTexture != null && SelectedTexture != null)
+		{
+			if (key != null && key.Keycode == Key.Delete)
+			{
+				AcceptEvent();
+				if (!key.Pressed)
+				{
+					if (SelectedTexture != null)
+					{
+						_OnDeletePressed();
+					}
+				}
+			}
+		}
+	}
+
 	public void Init(EditorInterface editorInterface, EditorUndoRedoManager undoRedo)
 	{
 		if (this.editorInterface != null) return;
@@ -143,10 +162,10 @@ public partial class QuickAtlasEditorWindow : Control
 					return;
 				}
 			}
-        
+		
 			GD.Print("Unable to find edit info for " + targetAsAtlas.ResourcePath);
-        }
-    }
+		}
+	}
 
 	// this one is for adding a new texture in response to a mouse click
 	public AtlasTextureEdits AddNewTexture(Vector2 position)
@@ -358,7 +377,8 @@ public partial class QuickAtlasEditorWindow : Control
 
 	private void _OnDeletePressed()
 	{
-		ConfirmationDialog.DialogText = "Are you sure?";
+		string name = SelectedTexture.ResourcePath.Substring(SelectedTexture.ResourcePath.LastIndexOf("/") + 1);
+		ConfirmationDialog.DialogText = "Delete AtlasTexture \"" + name + "\"?";
 		ConfirmationDialog.Show();
 	}
 

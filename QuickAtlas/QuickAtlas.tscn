@@ -14,6 +14,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 1
 script = ExtResource("1_cb2dl")
 NoTargetOverlay = NodePath("NothingSelectedOverlay")
 TexturePreviewArea = NodePath("VSplitContainer/AtlasPreviewContainer/AtlasPreview")
@@ -40,6 +41,7 @@ grow_vertical = 2
 [node name="AtlasPreviewContainer" type="ScrollContainer" parent="VSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+focus_mode = 1
 theme_override_styles/panel = SubResource("StyleBoxFlat_hu7o0")
 
 [node name="AtlasPreview" type="TextureRect" parent="VSplitContainer/AtlasPreviewContainer"]
@@ -201,6 +203,7 @@ initial_position = 4
 size = Vector2i(800, 500)
 
 [node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+title = "Delete?"
 initial_position = 2
 unresizable = true
 
