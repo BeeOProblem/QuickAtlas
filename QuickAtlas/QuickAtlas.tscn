@@ -7,7 +7,7 @@
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hu7o0"]
 bg_color = Color(0.128906, 0.148438, 0.179688, 1)
 
-[node name="QuickAtlas" type="Control" node_paths=PackedStringArray("NoTargetOverlay", "TexturePreviewArea", "PreviewControls", "PreviewContainer", "FileDialog", "ConfirmationDialog", "ErrorDialog", "SubTexturePreviewArea", "RegionX", "RegionY", "RegionW", "RegionH", "ResourceName")]
+[node name="QuickAtlas" type="Control" node_paths=PackedStringArray("NoTargetOverlay", "TexturePreviewArea", "PreviewControls", "PreviewContainer", "FileDialog", "ConfirmationDialog", "ErrorDialog", "SubTexturePreviewArea", "ResourceName", "RegionX", "RegionY", "RegionW", "RegionH", "MarginX", "MarginY", "MarginW", "MarginH", "FilterClip")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -23,12 +23,17 @@ PreviewContainer = NodePath("VSplitContainer/AtlasPreviewContainer")
 FileDialog = NodePath("FileDialog")
 ConfirmationDialog = NodePath("ConfirmationDialog")
 ErrorDialog = NodePath("ErrorDialog")
-SubTexturePreviewArea = NodePath("VSplitContainer/MainControlsContainer/HBoxContainer/PreviewSection/RegionPreviewContainer/RegionPreview")
-RegionX = NodePath("VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer/X")
-RegionY = NodePath("VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer2/Y")
-RegionW = NodePath("VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer3/W")
-RegionH = NodePath("VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer4/H")
+SubTexturePreviewArea = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection/RegionPreviewContainer/RegionPreview")
 ResourceName = NodePath("VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit")
+RegionX = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer/X")
+RegionY = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2/Y")
+RegionW = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3/W")
+RegionH = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4/H")
+MarginX = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer/X")
+MarginY = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer/Y")
+MarginW = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer/W")
+MarginH = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer/H")
+FilterClip = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/FilterClipCheckbox")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 1
@@ -91,81 +96,154 @@ text = "Delete"
 [node name="HSeparator" type="HSeparator" parent="VSplitContainer/MainControlsContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer"]
+[node name="PropertiesAndAtlasTexturePreview" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer"]
 layout_mode = 2
 
-[node name="RegionSection" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer"]
+[node name="AtlasTextureProperties" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview"]
 layout_mode = 2
 
-[node name="RegionInfoLabel" type="Label" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection"]
+[node name="RegionAndMargin" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties"]
 layout_mode = 2
-text = "Region Properties"
 
-[node name="RegionContainer" type="GridContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection"]
+[node name="RegionSection" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin"]
+custom_minimum_size = Vector2(256, 0)
+layout_mode = 2
+
+[node name="RegionInfoLabel" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection"]
+layout_mode = 2
+text = "Region"
+
+[node name="RegionContainer" type="GridContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection"]
 layout_mode = 2
 columns = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer"]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 text = "x"
 
-[node name="X" type="SpinBox" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer"]
+[node name="X" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer2"]
+[node name="Label" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 text = "y"
 
-[node name="Y" type="SpinBox" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer2"]
+[node name="Y" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer3"]
+[node name="Label2" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3"]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 text = "w"
 
-[node name="W" type="SpinBox" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer3"]
+[node name="W" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
 
-[node name="Label2" type="Label" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer4"]
+[node name="Label2" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4"]
 custom_minimum_size = Vector2(16, 0)
 layout_mode = 2
 text = "h"
 
-[node name="H" type="SpinBox" parent="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer4"]
+[node name="H" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
 
-[node name="PreviewSection" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer"]
+[node name="MarginSection" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin"]
+custom_minimum_size = Vector2(256, 0)
 layout_mode = 2
 
-[node name="PreviewLabel" type="Label" parent="VSplitContainer/MainControlsContainer/HBoxContainer/PreviewSection"]
+[node name="MarginInfoLabel" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection"]
+layout_mode = 2
+text = "Margin"
+
+[node name="MarginContainer" type="GridContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection"]
+layout_mode = 2
+columns = 2
+
+[node name="XContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "x"
+
+[node name="X" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer"]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 2
+
+[node name="YContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "y"
+
+[node name="Y" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer"]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 2
+
+[node name="WContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "w"
+
+[node name="W" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer"]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 2
+
+[node name="HContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer"]
+custom_minimum_size = Vector2(16, 0)
+layout_mode = 2
+text = "h"
+
+[node name="H" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer"]
+custom_minimum_size = Vector2(100, 32)
+layout_mode = 2
+
+[node name="FilterClipCheckbox" type="CheckBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties"]
+layout_mode = 2
+tooltip_text = "If true, the area outside of the region is clipped to avoid bleeding of the surrounding texture pixels."
+text = "Filter Clip"
+
+[node name="PreviewSection" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PreviewLabel" type="Label" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection"]
 layout_mode = 2
 text = "Preview
 "
 
-[node name="RegionPreviewContainer" type="CenterContainer" parent="VSplitContainer/MainControlsContainer/HBoxContainer/PreviewSection"]
+[node name="RegionPreviewContainer" type="CenterContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="RegionPreview" type="TextureRect" parent="VSplitContainer/MainControlsContainer/HBoxContainer/PreviewSection/RegionPreviewContainer"]
+[node name="RegionPreview" type="TextureRect" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection/RegionPreviewContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_vertical = 3
@@ -217,10 +295,15 @@ dialog_text = "Cannot write file cuz u dun goofed or something!"
 [connection signal="text_submitted" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_OnResourcePathChangeSubmit"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/NextButton" to="." method="_OnRenamePressed"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/PreviousButton" to="." method="_OnDeletePressed"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer/X" to="." method="_OnChangedX"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer2/Y" to="." method="_OnChangedY"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer3/W" to="." method="_OnChangedW"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/HBoxContainer/RegionSection/RegionContainer/HBoxContainer4/H" to="." method="_OnChangedH"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer/X" to="." method="_OnChangedRegionX"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2/Y" to="." method="_OnChangedRegionY"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3/W" to="." method="_OnChangedRegionW"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4/H" to="." method="_OnChangedRegionH"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer/X" to="." method="_OnChangedMarginX"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer/Y" to="." method="_OnChangedMarginY"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer/W" to="." method="_OnChangedMarginW"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer/H" to="." method="_OnChangedMarginH"]
+[connection signal="toggled" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/FilterClipCheckbox" to="." method="_OnFilterClipCheckboxToggled"]
 [connection signal="file_selected" from="FileDialog" to="." method="_OnFileDialogSelected"]
 [connection signal="canceled" from="ConfirmationDialog" to="." method="_OnCancelled"]
 [connection signal="confirmed" from="ConfirmationDialog" to="." method="_OnConfirmed"]

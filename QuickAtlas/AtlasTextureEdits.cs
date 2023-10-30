@@ -16,30 +16,6 @@ public class AtlasTextureEdits
         private set;
     }
 
-    public bool RegionChanged
-    {
-        get
-        {
-            return actualTexture.Region != editedRegion;
-        }
-    }
-
-    public bool ResourcePathChanged
-    {
-        get
-        {
-            return actualTexture.ResourcePath != editedPath;
-        }
-    }
-
-    public string UneditedResourcePath
-    {
-        get
-        {
-            return actualTexture.ResourcePath;
-        }
-    }
-
     public string ResourcePath
     {
         get
@@ -53,11 +29,40 @@ public class AtlasTextureEdits
         }
     }
 
-    public Rect2 UneditedRegion
+    public string UneditedResourcePath
     {
         get
         {
-            return actualTexture.Region;
+            return actualTexture.ResourcePath;
+        }
+    }
+
+    public bool ResourcePathChanged
+    {
+        get
+        {
+            return actualTexture.ResourcePath != editedPath;
+        }
+    }
+
+    public bool FilterClip
+    {
+        get
+        {
+            return actualTexture.FilterClip;
+        }
+
+        set
+        {
+            actualTexture.FilterClip = value;
+        }
+    }
+
+    public bool RegionChanged
+    {
+        get
+        {
+            return actualTexture.Region != editedRegion;
         }
     }
 
@@ -74,6 +79,14 @@ public class AtlasTextureEdits
                 editedRegion = value;
                 RecalculateHandles();
             }
+        }
+    }
+
+    public Rect2 UneditedRegion
+    {
+        get
+        {
+            return actualTexture.Region;
         }
     }
 
@@ -102,6 +115,19 @@ public class AtlasTextureEdits
         {
             editedRegion.Size = value;
             RecalculateHandles();
+        }
+    }
+
+    public Rect2 Margin
+    {
+        get
+        {
+            return actualTexture.Margin;
+        }
+
+        set
+        {
+            actualTexture.Margin = value;
         }
     }
 
