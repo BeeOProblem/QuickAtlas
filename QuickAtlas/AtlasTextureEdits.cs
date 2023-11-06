@@ -7,14 +7,7 @@ public class AtlasTextureEdits
     public AtlasTexture actualTexture;
     public Rect2[] Handles;
 
-    private Rect2 editedRegion;
     private string editedPath;
-
-    public bool IsNew
-    {
-        get;
-        private set;
-    }
 
     public string ResourcePath
     {
@@ -26,22 +19,6 @@ public class AtlasTextureEdits
         set
         {
             editedPath = value;
-        }
-    }
-
-    public string UneditedResourcePath
-    {
-        get
-        {
-            return actualTexture.ResourcePath;
-        }
-    }
-
-    public bool ResourcePathChanged
-    {
-        get
-        {
-            return actualTexture.ResourcePath != editedPath;
         }
     }
 
@@ -58,63 +35,19 @@ public class AtlasTextureEdits
         }
     }
 
-    public bool RegionChanged
-    {
-        get
-        {
-            return actualTexture.Region != editedRegion;
-        }
-    }
-
     public Rect2 Region
-    {
-        get
-        {
-            return editedRegion;
-        }
-        set
-        {
-            if (value != editedRegion)
-            {
-                editedRegion = value;
-                RecalculateHandles();
-            }
-        }
-    }
-
-    public Rect2 UneditedRegion
     {
         get
         {
             return actualTexture.Region;
         }
-    }
-
-    public Vector2 Position
-    {
-        get
-        {
-            return editedRegion.Position;
-        }
-
-        set 
-        { 
-            editedRegion.Position = value;
-            RecalculateHandles();
-        }
-    }
-
-    public Vector2 Size
-    {
-        get
-        {
-            return editedRegion.Size;
-        }
-
         set
         {
-            editedRegion.Size = value;
-            RecalculateHandles();
+            if (value != actualTexture.Region)
+            {
+                actualTexture.Region = value;
+                RecalculateHandles();
+            }
         }
     }
 
@@ -135,32 +68,28 @@ public class AtlasTextureEdits
     {
         actualTexture = new AtlasTexture();
         actualTexture.Atlas = baseTexture;
+        actualTexture.Region = initialRegion;
         editedPath = initialPath;
-        editedRegion = initialRegion;
-        IsNew = true;
         RecalculateHandles();
     }
 
     public AtlasTextureEdits(AtlasTexture texture)
     {
         actualTexture = texture;
-        editedRegion = texture.Region;
         editedPath = texture.ResourcePath;
-        IsNew = false;
         RecalculateHandles();
     }
 
     public void SaveResourceFile()
     {
-        IsNew = false;
-        actualTexture.Region = editedRegion;
         if (editedPath != actualTexture.ResourcePath && !string.IsNullOrEmpty(actualTexture.ResourcePath))
         {
             GD.Print("Rename/Move AtlasTexture " + actualTexture.ResourcePath + " to " + editedPath);
             Directory.Move(ProjectSettings.GlobalizePath(actualTexture.ResourcePath), ProjectSettings.GlobalizePath(editedPath));
         }
 
-        actualTexture.TakeOverPath(editedPath); 
+        actualTexture.TakeOverPath(editedPath);
+        actualTexture.ResourcePath = editedPath;
         ResourceSaver.Save(actualTexture, editedPath);
         GD.Print("Saved AtlasTexture " + actualTexture.ResourcePath);
     }
@@ -168,7 +97,7 @@ public class AtlasTextureEdits
     public bool GetClickIfAny(Vector2 mousePosition, ref int clickedHandle)
     {
         bool clicked = false;
-        if (editedRegion.HasPoint(mousePosition))
+        if (Region.HasPoint(mousePosition))
         {
             GD.Print(string.Format("Mouse pressed on texture {0}", ResourcePath));
             clicked = true;
@@ -194,7 +123,9 @@ public class AtlasTextureEdits
 
     public void MoveRegion(Vector2 distance)
     {
-        editedRegion.Position = editedRegion.Position + distance;
+        Rect2 newRegion = Region;
+        newRegion.Position += distance;
+        Region = newRegion;
         RecalculateHandles();
     }
 
@@ -202,14 +133,14 @@ public class AtlasTextureEdits
     {
         Vector2 move = Vector2.Zero;
         Vector2 grow = Vector2.Zero;
-        if (position.X < editedRegion.Position.X)
+        if (position.X < Region.Position.X)
         {
-            grow.X = editedRegion.Position.X - position.X;
+            grow.X = Region.Position.X - position.X;
             move.X = -grow.X;
         }
-        else if (position.X > editedRegion.Position.X + editedRegion.Size.X)
+        else if (position.X > Region.Position.X + Region.Size.X)
         {
-            grow.X = position.X - (editedRegion.Position.X + editedRegion.Size.X);
+            grow.X = position.X - (Region.Position.X + Region.Size.X);
             move.X = 0;
         }
         else
@@ -217,25 +148,25 @@ public class AtlasTextureEdits
             if (handle == 0 || handle == 3 || handle == 5)
             {
                 // dragging the left side inward (right)
-                grow.X = editedRegion.Position.X - position.X;
+                grow.X = Region.Position.X - position.X;
                 move.X = -grow.X;
             }
             else if (handle == 2 || handle == 4 || handle == 7)
             {
                 // dragging the right side inward (left)
-                grow.X = position.X - (editedRegion.Position.X + editedRegion.Size.X);
+                grow.X = position.X - (Region.Position.X + Region.Size.X);
                 move.X = 0;
             }
         }
 
-        if (position.Y < editedRegion.Position.Y)
+        if (position.Y < Region.Position.Y)
         {
-            grow.Y = editedRegion.Position.Y - position.Y;
+            grow.Y = Region.Position.Y - position.Y;
             move.Y = -grow.Y;
         }
-        else if (position.Y > editedRegion.Position.Y + editedRegion.Size.Y)
+        else if (position.Y > Region.Position.Y + Region.Size.Y)
         {
-            grow.Y = position.Y - (editedRegion.Position.Y + editedRegion.Size.Y);
+            grow.Y = position.Y - (Region.Position.Y + Region.Size.Y);
             move.Y = 0;
         }
         else
@@ -243,19 +174,21 @@ public class AtlasTextureEdits
             if (handle == 0 || handle == 1 || handle == 2)
             {
                 // dragging the top downward
-                grow.Y = editedRegion.Position.Y - position.Y;
+                grow.Y = Region.Position.Y - position.Y;
                 move.Y = -grow.Y;
             }
             else if (handle == 5 || handle == 6 || handle == 7)
             {
                 // dragging the bottom upward
-                grow.Y = position.Y - (editedRegion.Position.Y + editedRegion.Size.Y);
+                grow.Y = position.Y - (Region.Position.Y + Region.Size.Y);
                 move.Y = 0;
             }
         }
 
-        editedRegion.Position = editedRegion.Position + move;
-        editedRegion.Size = editedRegion.Size + grow;
+        Rect2 newRegion = Region;
+        newRegion.Position += move;
+        newRegion.Size += grow;
+        Region = newRegion;
 
         RecalculateHandles();
     }
@@ -265,10 +198,10 @@ public class AtlasTextureEdits
         float left, midX, right;
         float top, midY, bottom;
 
-        left = editedRegion.Position.X;
-        top = editedRegion.Position.Y;
-        right = left + editedRegion.Size.X;
-        bottom = top + editedRegion.Size.Y;
+        left = Region.Position.X;
+        top = Region.Position.Y;
+        right = left + Region.Size.X;
+        bottom = top + Region.Size.Y;
         midX = (left + right) / 2;
         midY = (top + bottom) / 2;
 

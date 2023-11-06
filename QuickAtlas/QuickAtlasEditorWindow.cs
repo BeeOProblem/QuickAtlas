@@ -46,10 +46,10 @@ public partial class QuickAtlasEditorWindow : Control
 	[Export]
 	SpinBox MarginH;
 
-    [Export]
-    CheckBox FilterClip;
+	[Export]
+	CheckBox FilterClip;
 
-    private EditorInterface editorInterface;
+	private EditorInterface editorInterface;
 	private EditorUndoRedoManager undoRedo;
 	private Dictionary<string, List<string>> textureAtlasRefs;
 
@@ -86,11 +86,6 @@ public partial class QuickAtlasEditorWindow : Control
 		set
 		{
 			if (selectedAtlasTexture == value) return;
-			if (selectedAtlasTexture != null)
-			{
-				SaveChangesAndUpdateHistory(selectedAtlasTexture);
-			}
-
 			selectedAtlasTexture = value;
 			UpdateControlValues();
 		}
@@ -179,8 +174,8 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	// this one is for adding a new texture in response to a mouse click
-	public AtlasTextureEdits AddNewTexture(Vector2 position)
+	// this one does initial setup for a new texture but does not commit it to the filesystem
+	public AtlasTextureEdits StartNewTexture(Vector2 position)
 	{
 		newTextureCounter++;
 
@@ -190,96 +185,104 @@ public partial class QuickAtlasEditorWindow : Control
 		return newTexture;
 	}
 
-	public void SaveChangesAndUpdateHistory(AtlasTextureEdits editedTexture)
+	public void DoAddNewTextureAction(AtlasTextureEdits editedTexture)
 	{
-		bool anythingChanged = false;
-		string oldPath = null, newPath = null;
-
-		// set up undo history
-		// TODO: move changing of stuff into Do/Undo methods to eliminate duplications
-		if (editedTexture.IsNew)
-		{
-			newPath = editedTexture.ResourcePath;
-			anythingChanged = true;
-			undoRedo.CreateAction("QuickAtlas - Create AtlasTexture", UndoRedo.MergeMode.Disable, this);
-			undoRedo.AddDoMethod(this, "AddTextureRegion", editedTexture.ResourcePath, editedTexture.Region);
-			undoRedo.AddUndoMethod(this, "DeleteTextureRegion", editedTexture.ResourcePath);
-			undoRedo.CommitAction(false);
-		}
-		else
-		{
-			if (editedTexture.RegionChanged)
-			{
-				anythingChanged = true;
-				undoRedo.CreateAction("QuickAtlas - Change AtlasTexture region", UndoRedo.MergeMode.Disable, this);
-				undoRedo.AddDoMethod(this, "ChangeTextureRegion", editedTexture.ResourcePath, editedTexture.Region);
-				undoRedo.AddUndoMethod(this, "ChangeTextureRegion", editedTexture.ResourcePath, editedTexture.UneditedRegion);
-				undoRedo.CommitAction(false);
-			}
-
-			if (editedTexture.ResourcePathChanged)
-			{
-				newPath = editedTexture.ResourcePath;
-				oldPath = editedTexture.UneditedResourcePath;
-				anythingChanged = true;
-
-				undoRedo.CreateAction("QuickAtlas - Change AtlasTexture resource path", UndoRedo.MergeMode.Disable, this);
-				undoRedo.AddDoMethod(this, "ChangeTextureResourcePath", editedTexture.ResourcePath, editedTexture.ResourcePath);
-				undoRedo.AddUndoMethod(this, "ChangeTextureResourcePath", editedTexture.ResourcePath, editedTexture.UneditedResourcePath);
-				undoRedo.CommitAction(false);
-			}
-		}
-
-		// save changes
-		if (anythingChanged)
-		{
-			editedTexture.SaveResourceFile();
-
-			// update internal references only after we know the file saved successfully
-			if(oldPath!= null)
-			{
-				textureAtlasRefs[currentBaseTexture.ResourcePath].Remove(oldPath);
-			}
-
-			if (newPath != null)
-			{
-				textureAtlasRefs[currentBaseTexture.ResourcePath].Add(newPath);
-				editorInterface.GetResourceFilesystem().Scan();
-			}
-
-			UpdateControlValues();
-		}
+		undoRedo.CreateAction("QuickAtlas - Create AtlasTexture Region");
+		undoRedo.AddDoMethod(this, "AddTextureRegion", editedTexture.ResourcePath, editedTexture.Region);
+		undoRedo.AddUndoMethod(this, "DeleteTextureRegion", editedTexture.ResourcePath);
+		undoRedo.CommitAction();
 	}
 
-	// this one is for adding a new texture to undo a delete
+	public void DoChangeRegionAction(Rect2 newRegion)
+	{
+		undoRedo.CreateAction("QuickAtlas - Region");
+		undoRedo.AddDoMethod(this, "ChangeRegion", selectedAtlasTexture.ResourcePath, newRegion);
+		undoRedo.AddUndoMethod(this, "ChangeRegion", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Region);
+		undoRedo.CommitAction();
+	}
+
+	// this commits a new texture to the filesystem and is called by undo/redo actions
 	public void AddTextureRegion(string newResourcePath, Rect2 newRegion)
 	{
 		GD.Print("(Re)create AtlasTexture ", newResourcePath, newRegion);
+		AtlasTextureEdits newTexture = null;
 		for (int i = 0; i < textureEdits.Count; i++)
 		{
 			if (textureEdits[i].ResourcePath == newResourcePath)
 			{
-				throw new System.Exception("Creating AtlasTexture that already exists via undo/redo!");
+				if (SelectedTexture != textureEdits[i])
+				{
+					throw new System.Exception("Creating AtlasTexture that already exists via undo/redo!");
+				}
+				else
+				{
+					GD.Print("Committing new texture created from drag+drop");
+					newTexture = textureEdits[i];
+				}
 			}
 		}
 
-		AtlasTextureEdits newTexture = new AtlasTextureEdits(newResourcePath, newRegion, currentBaseTexture);
+		if (newTexture == null)
+		{
+			newTexture = new AtlasTextureEdits(newResourcePath, newRegion, currentBaseTexture);
+			textureEdits.Add(newTexture);
+		}
+
 		try
 		{
 			newTexture.SaveResourceFile();
 
-			textureEdits.Add(newTexture);
 			textureAtlasRefs[currentBaseTexture.ResourcePath].Add(newTexture.ResourcePath);
 			selectedAtlasTexture = newTexture;
 			UpdateControlValues();
+			editorInterface.GetResourceFilesystem().Scan();
 		}
-		catch (System.IO.IOException error)
+		catch (IOException error)
 		{
+			textureEdits.Remove(newTexture);
 			ErrorDialog.DialogText = error.Message;
 			ErrorDialog.Show();
 		}
+	}
 
-		PreviewControls.QueueRedraw();
+	public void ChangeTextureResourcePath(string oldResourcePath, string newResourcePath)
+	{
+		if (oldResourcePath == newResourcePath)
+		{
+			GD.Print("Changing ", oldResourcePath, " to same name");
+			return;
+		}
+
+		GD.Print("Change path from ", oldResourcePath, " to ", newResourcePath);
+		for (int i = 0; i < textureEdits.Count; i++)
+		{
+			if (textureEdits[i].ResourcePath == oldResourcePath)
+			{
+				textureEdits[i].ResourcePath = newResourcePath;
+
+				try
+				{
+					textureEdits[i].SaveResourceFile();
+
+					UpdateControlValues();
+					editorInterface.GetResourceFilesystem().Scan();
+
+					textureAtlasRefs[currentBaseTexture.ResourcePath].Remove(oldResourcePath);
+					textureAtlasRefs[currentBaseTexture.ResourcePath].Add(newResourcePath);
+				}
+				catch (IOException error)
+				{
+					ErrorDialog.DialogText = error.Message;
+					ErrorDialog.Show();
+
+					textureEdits[i].ResourcePath = oldResourcePath;
+				}
+
+				return;
+			}
+		}
+
+		GD.Print("Cannot find AtlasTexture, probably associated with different parent than selected ", oldResourcePath);
 	}
 
 	public void DeleteTextureRegion(string newResourcePath)
@@ -295,7 +298,6 @@ public partial class QuickAtlasEditorWindow : Control
 				selectedAtlasTexture = null;
 				UpdateControlValues();
 				editorInterface.GetResourceFilesystem().Scan();
-				PreviewControls.QueueRedraw();
 				return;
 			}
 		}
@@ -303,103 +305,51 @@ public partial class QuickAtlasEditorWindow : Control
 		GD.Print("Deleting AtlasTexture that was already deleted");
 	}
 
-	public void ChangeTextureRegion(string resourcePath, Rect2 newRegion)
+	public void ChangeRegion(string resourcePath, Rect2 newRegion)
 	{
-		// this code is awful!
-		// there's multiple places that do this operation and no good lookup for AtlasTexture here since it's in the preview controls
-		// moving the lookup here probably would make sense but I don't feel like doing that yet
-		GD.Print("Do/undo change region for ", resourcePath);
+		GD.Print("Change Region ", resourcePath);
 		for (int i = 0; i < textureEdits.Count; i++)
 		{
 			if (textureEdits[i].ResourcePath == resourcePath)
 			{
-				GD.Print(selectedAtlasTexture == textureEdits[i] ? "undo on selected" : "undo on other");
-				GD.Print("  from ", textureEdits[i].Region, " to ", newRegion);
 				textureEdits[i].Region = newRegion;
-				textureEdits[i].SaveResourceFile();
 				UpdateControlValues();
-				PreviewControls.QueueRedraw();
-				return;
+				textureEdits[i].SaveResourceFile();
 			}
 		}
-
-		GD.Print("Cannot find AtlasTexture, probably associated with different parent than selected ", resourcePath);
 	}
 
-	public void ChangeTextureResourcePath(string resourcePath, string newResourcePath)
-	{
-		if (resourcePath != newResourcePath)
-		{
-			GD.Print("Do/undo change path for ", resourcePath);
-			for (int i = 0; i < textureEdits.Count; i++)
-			{
-				if (textureEdits[i].ResourcePath == resourcePath)
-				{
-					GD.Print(selectedAtlasTexture == textureEdits[i] ? "undo on selected" : "undo on other");
-					GD.Print("  from ", resourcePath, " to ", newResourcePath);
-					textureEdits[i].ResourcePath = newResourcePath;
-
-					try
-					{
-						textureEdits[i].SaveResourceFile();
-						
-						UpdateControlValues();
-						PreviewControls.QueueRedraw();
-						editorInterface.GetResourceFilesystem().Scan();
-					}
-					catch (System.IO.IOException error)
-					{
-						ErrorDialog.DialogText = error.Message;
-						ErrorDialog.Show();
-
-						textureEdits[i].ResourcePath = textureEdits[i].UneditedResourcePath;
-					}
-
-					return;
-				}
-			}
-		}
-
-		GD.Print("Cannot find AtlasTexture, probably associated with different parent than selected ", resourcePath);
-	}
-
-	public void SetFilterClip(string resourcePath, bool value)
-	{
-        GD.Print("Change FilterClip ", resourcePath);
-        for (int i = 0; i < textureEdits.Count; i++)
-        {
-            if (textureEdits[i].ResourcePath == resourcePath)
-            {
-                textureEdits[i].FilterClip = value;
-                UpdateControlValues();
-                textureEdits[i].SaveResourceFile();
-            }
-        }
-    }
-
-    public void ChangeMargin(string resourcePath, Rect2 newMargin)
+	public void ChangeMargin(string resourcePath, Rect2 newMargin)
 	{
 		GD.Print("Change Margin ", resourcePath);
 		for (int i = 0; i < textureEdits.Count; i++)
 		{
 			if (textureEdits[i].ResourcePath == resourcePath)
 			{
-                textureEdits[i].Margin = newMargin;
-                UpdateControlValues();
+				textureEdits[i].Margin = newMargin;
+				UpdateControlValues();
 				textureEdits[i].SaveResourceFile();
-            }
-        }
+			}
+		}
 	}
 
-    private void _FilesystemChanged()
+	public void SetFilterClip(string resourcePath, bool value)
 	{
-		// TODO: ignore when triggered by own save actions
-		GD.Print("File system state changed. Rebuilding AtlasTexture dictionary");
-		foreach (AtlasTextureEdits edits in textureEdits)
+		GD.Print("Change FilterClip ", resourcePath);
+		for (int i = 0; i < textureEdits.Count; i++)
 		{
-			edits.ResourcePath = edits.UneditedResourcePath;
+			if (textureEdits[i].ResourcePath == resourcePath)
+			{
+				textureEdits[i].FilterClip = value;
+				UpdateControlValues();
+				textureEdits[i].SaveResourceFile();
+			}
 		}
+	}
 
+	private void _FilesystemChanged()
+	{
+		GD.Print("File system state changed. Rebuilding AtlasTexture dictionary");
 		RebuildResourceDictionary();
 		UpdateControlValues();
 	}
@@ -412,7 +362,7 @@ public partial class QuickAtlasEditorWindow : Control
 
 	private void _OnFileDialogSelected(string path)
 	{
-		RenameSelectedAtlasTexture(path);
+		DoRenameAction(path);
 	}
 
 	private void _OnDeletePressed()
@@ -424,7 +374,7 @@ public partial class QuickAtlasEditorWindow : Control
 
 	private void _OnConfirmed()
 	{
-		undoRedo.CreateAction("QuickAtlas - Delete AtlasTexture", UndoRedo.MergeMode.Disable, this);
+		undoRedo.CreateAction("QuickAtlas - Delete AtlasTexture Region", UndoRedo.MergeMode.Disable, this);
 		undoRedo.AddDoMethod(this, "DeleteTextureRegion", selectedAtlasTexture.ResourcePath);
 		undoRedo.AddUndoMethod(this, "AddTextureRegion", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Region);
 		undoRedo.CommitAction(true);
@@ -435,93 +385,84 @@ public partial class QuickAtlasEditorWindow : Control
 		GD.Print("AtlasTexture delete cancelled");
 	}
 
-	private void _OnResourcePathChanged(string path)
-	{
-		selectedAtlasTexture.ResourcePath = path;
-	}
-
 	private void _OnResourcePathChangeSubmit(string path)
 	{
-		RenameSelectedAtlasTexture(path);
+		DoRenameAction(path);
 	}
 
 	private void _OnFilterClipCheckboxToggled(bool value)
 	{
-        undoRedo.CreateAction("QuickAtlas - Filter Clip");
-        undoRedo.AddDoMethod(this, "SetFilterClip", selectedAtlasTexture.ResourcePath, value);
-        undoRedo.AddUndoMethod(this, "SetFilterClip", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.FilterClip);
-        undoRedo.CommitAction();
-    }
+		undoRedo.CreateAction("QuickAtlas - Filter Clip");
+		undoRedo.AddDoMethod(this, "SetFilterClip", selectedAtlasTexture.ResourcePath, value);
+		undoRedo.AddUndoMethod(this, "SetFilterClip", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.FilterClip);
+		undoRedo.CommitAction();
+	}
 
-    private void _OnChangedRegionX(double value)
+	private void _OnChangedRegionX(double value)
 	{
-		selectedAtlasTexture.Position = new Vector2((float)value, selectedAtlasTexture.Position.Y);
-		PreviewControls.QueueRedraw();
-		SaveChangesAndUpdateHistory(selectedAtlasTexture);
+		Rect2 newRegion = selectedAtlasTexture.Region;
+		newRegion.Position = new Vector2((float)value, newRegion.Position.Y);
+		DoChangeRegionAction(newRegion);
 	}
 
 	private void _OnChangedRegionY(double value)
 	{
-		selectedAtlasTexture.Position = new Vector2(selectedAtlasTexture.Position.X, (float)value);
-		PreviewControls.QueueRedraw();
-		SaveChangesAndUpdateHistory(selectedAtlasTexture);
+		Rect2 newRegion = selectedAtlasTexture.Region;
+		newRegion.Position = new Vector2(newRegion.Position.X, (float)value);
+		DoChangeRegionAction(newRegion);
 	}
 
 	private void _OnChangedRegionW(double value)
 	{
-		selectedAtlasTexture.Size = new Vector2((float)value, selectedAtlasTexture.Size.Y);
-		PreviewControls.QueueRedraw();
-		SaveChangesAndUpdateHistory(selectedAtlasTexture);
+		Rect2 newRegion = selectedAtlasTexture.Region;
+		newRegion.Size = new Vector2((float)value, newRegion.Size.Y);
+		DoChangeRegionAction(newRegion);
 	}
 
 	private void _OnChangedRegionH(double value)
 	{
-		selectedAtlasTexture.Size = new Vector2(selectedAtlasTexture.Size.X, (float)value);
-		PreviewControls.QueueRedraw();
-		SaveChangesAndUpdateHistory(selectedAtlasTexture);
+		Rect2 newRegion = selectedAtlasTexture.Region;
+		newRegion.Size = new Vector2(newRegion.Size.X, (float)value);
+		DoChangeRegionAction(newRegion);
 	}
 
 	private void _OnChangedMarginX(double value)
 	{
 		Rect2 newMargin = selectedAtlasTexture.Margin;
 		newMargin.Position = new Vector2((float)value, newMargin.Position.Y);
-		undoRedo.CreateAction("QuickAtlas - Margin");
-		undoRedo.AddDoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath,newMargin);
-        undoRedo.AddUndoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Margin);
-        undoRedo.CommitAction();
+		DoChangeMarginAction(newMargin);
 	}
 
 	private void _OnChangedMarginY(double value)
 	{
-        Rect2 newMargin = selectedAtlasTexture.Margin;
-        newMargin.Position = new Vector2(newMargin.Position.X, (float)value);
-        undoRedo.CreateAction("QuickAtlas - Margin");
-        undoRedo.AddDoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, newMargin);
-        undoRedo.AddUndoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Margin);
-        undoRedo.CommitAction();
-    }
+		Rect2 newMargin = selectedAtlasTexture.Margin;
+		newMargin.Position = new Vector2(newMargin.Position.X, (float)value);
+		DoChangeMarginAction(newMargin);
+	}
 
-    private void _OnChangedMarginW(double value)
+	private void _OnChangedMarginW(double value)
 	{
-        Rect2 newMargin = selectedAtlasTexture.Margin;
-        newMargin.Size = new Vector2((float)value, newMargin.Position.Y);
-        undoRedo.CreateAction("QuickAtlas - Margin");
-        undoRedo.AddDoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, newMargin);
-        undoRedo.AddUndoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Margin);
-        undoRedo.CommitAction();
-    }
+		Rect2 newMargin = selectedAtlasTexture.Margin;
+		newMargin.Size = new Vector2((float)value, newMargin.Position.Y);
+		DoChangeMarginAction(newMargin);
+	}
 
-    private void _OnChangedMarginH(double value)
+	private void _OnChangedMarginH(double value)
 	{
-        Rect2 newMargin = selectedAtlasTexture.Margin;
-        newMargin.Size = new Vector2(newMargin.Size.X, (float)value);
-        undoRedo.CreateAction("QuickAtlas - Margin");
-        undoRedo.AddDoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, newMargin);
-        undoRedo.AddUndoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Margin);
-        undoRedo.CommitAction();
-    }
+		Rect2 newMargin = selectedAtlasTexture.Margin;
+		newMargin.Size = new Vector2(newMargin.Size.X, (float)value);
+		DoChangeMarginAction(newMargin);
+	}
 
-    private void RebuildResourceDictionary()
+	private void DoChangeMarginAction(Rect2 newMargin)
+	{
+		undoRedo.CreateAction("QuickAtlas - Margin");
+		undoRedo.AddDoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, newMargin);
+		undoRedo.AddUndoMethod(this, "ChangeMargin", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Margin);
+		undoRedo.CommitAction();
+	}
+
+	private void RebuildResourceDictionary()
 	{
 		List<string> allResources = new List<string>();
 
@@ -611,33 +552,24 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	private void RenameSelectedAtlasTexture(string path)
+	private void DoRenameAction(string newPath)
 	{
-		if (!path.EndsWith(".tres"))
+		if (!newPath.EndsWith(".tres"))
 		{
 			GD.Print("Specified resource path without .tres extension. Adding.");
-			path += ".tres";
+			newPath += ".tres";
 		}
 
-		ResourceName.Text = path;
-		selectedAtlasTexture.ResourcePath = path;
-
-		try
-		{
-			SaveChangesAndUpdateHistory(selectedAtlasTexture);
-		}
-		catch (System.IO.IOException error)
-		{
-			ErrorDialog.DialogText = error.Message;
-			ErrorDialog.Show();
-
-			selectedAtlasTexture.ResourcePath = selectedAtlasTexture.UneditedResourcePath;
-			ResourceName.Text = selectedAtlasTexture.UneditedResourcePath;
-		}
+		string oldPath = selectedAtlasTexture.ResourcePath;
+		undoRedo.CreateAction("QuickAtlas - Change resource path", UndoRedo.MergeMode.Disable, this);
+		undoRedo.AddDoMethod(this, "ChangeTextureResourcePath", oldPath, newPath);
+		undoRedo.AddUndoMethod(this, "ChangeTextureResourcePath", newPath, oldPath);
+		undoRedo.CommitAction();
 	}
 
 	private void UpdateControlValues()
 	{
+		PreviewControls.QueueRedraw();
 		SubTexturePreviewArea.Texture = selectedAtlasTexture?.actualTexture;
 		if (selectedAtlasTexture != null)
 		{
@@ -646,14 +578,14 @@ public partial class QuickAtlasEditorWindow : Control
 			RegionW.SetValueNoSignal(selectedAtlasTexture.Region.Size.X);
 			RegionH.SetValueNoSignal(selectedAtlasTexture.Region.Size.Y);
 
-            MarginX.SetValueNoSignal(selectedAtlasTexture.Margin.Position.X);
-            MarginY.SetValueNoSignal(selectedAtlasTexture.Margin.Position.Y);
-            MarginW.SetValueNoSignal(selectedAtlasTexture.Margin.Size.X);
-            MarginH.SetValueNoSignal(selectedAtlasTexture.Margin.Size.Y);
+			MarginX.SetValueNoSignal(selectedAtlasTexture.Margin.Position.X);
+			MarginY.SetValueNoSignal(selectedAtlasTexture.Margin.Position.Y);
+			MarginW.SetValueNoSignal(selectedAtlasTexture.Margin.Size.X);
+			MarginH.SetValueNoSignal(selectedAtlasTexture.Margin.Size.Y);
 
 			FilterClip.SetPressedNoSignal(selectedAtlasTexture.FilterClip);
 
-            ResourceName.Text = selectedAtlasTexture.ResourcePath;
+			ResourceName.Text = selectedAtlasTexture.ResourcePath;
 			RegionW.MaxValue = currentBaseTexture.GetWidth() - selectedAtlasTexture.Region.Position.X;
 			RegionH.MaxValue = currentBaseTexture.GetHeight() - selectedAtlasTexture.Region.Position.Y;
 		}

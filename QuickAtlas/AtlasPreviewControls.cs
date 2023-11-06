@@ -70,7 +70,7 @@ public partial class AtlasPreviewControls : Control
 
                     if(clickedTexture == null)
                     {
-                        clickedTexture = window.AddNewTexture(mouseEvent.Position);
+                        clickedTexture = window.StartNewTexture(mouseEvent.Position);
 
                         // bottom right, arbitrary but should give decent ability to size and fit workflow
                         clickedHandle = 7;
@@ -83,7 +83,14 @@ public partial class AtlasPreviewControls : Control
                 {
                     if (clickedTexture != null)
                     {
-                        window.SaveChangesAndUpdateHistory(clickedTexture);
+                        if(addingNewTexture)
+                        {
+                            window.DoAddNewTextureAction(clickedTexture);
+                        }
+                        else
+                        {
+                            window.DoChangeRegionAction(clickedTexture.Region);
+                        }
 
                         // click is no longer in progress
                         clickedTexture = null;

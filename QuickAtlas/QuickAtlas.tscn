@@ -252,7 +252,6 @@ expand_mode = 1
 stretch_mode = 4
 
 [node name="NothingSelectedOverlay" type="ColorRect" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -292,7 +291,6 @@ initial_position = 2
 size = Vector2i(400, 100)
 dialog_text = "Cannot write file cuz u dun goofed or something!"
 
-[connection signal="text_changed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_OnResourcePathChanged"]
 [connection signal="text_submitted" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_OnResourcePathChangeSubmit"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/NextButton" to="." method="_OnRenamePressed"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/PreviousButton" to="." method="_OnDeletePressed"]
