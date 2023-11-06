@@ -98,6 +98,7 @@ layout_mode = 2
 
 [node name="PropertiesAndAtlasTexturePreview" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="AtlasTextureProperties" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview"]
 layout_mode = 2
@@ -239,19 +240,19 @@ layout_mode = 2
 text = "Preview
 "
 
-[node name="RegionPreviewContainer" type="CenterContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection"]
+[node name="RegionPreviewContainer" type="PanelContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection"]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="RegionPreview" type="TextureRect" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection/RegionPreviewContainer"]
-custom_minimum_size = Vector2(50, 50)
+custom_minimum_size = Vector2(50, 100)
 layout_mode = 2
-size_flags_vertical = 3
 texture = ExtResource("3_uosu3")
-expand_mode = 3
+expand_mode = 1
 stretch_mode = 4
 
 [node name="NothingSelectedOverlay" type="ColorRect" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
