@@ -2,13 +2,23 @@
 using System;
 using System.IO;
 
+/// <summary>
+/// Used to track in-process modifications to an AtlasTexture resource before
+/// committing them to the filesystem and provides helper pseudo-control handles
+/// to support drag and drop resizing
+/// </summary>
 public class AtlasTextureEdits
 {
+    // TODO: consider changing AtlasTextureEdits and Handles to nodes for easier(?) mouse handling
     public AtlasTexture actualTexture;
     public Rect2[] Handles;
 
     private string editedPath;
 
+    /// <summary>
+    /// Path of the texture. This does not update the actual resource path
+    /// until SaveResourceFile is called.
+    /// </summary>
     public string ResourcePath
     {
         get
@@ -22,6 +32,9 @@ public class AtlasTextureEdits
         }
     }
 
+    /// <summary>
+    /// Does not update the actual resource file until SaveResourceFile is called
+    /// </summary>
     public bool FilterClip
     {
         get
@@ -35,6 +48,9 @@ public class AtlasTextureEdits
         }
     }
 
+    /// <summary>
+    /// Does not update the actual resource file until SaveResourceFile is called
+    /// </summary>
     public Rect2 Region
     {
         get
@@ -51,6 +67,9 @@ public class AtlasTextureEdits
         }
     }
 
+    /// <summary>
+    /// Does not update the actual resource file until SaveResourceFile is called
+    /// </summary>
     public Rect2 Margin
     {
         get
@@ -64,6 +83,13 @@ public class AtlasTextureEdits
         }
     }
 
+    /// <summary>
+    /// Used when creating an entirely new AtlasTexture resource. This will not
+    /// actually exist on the filesystem until SaveResourceFile is called
+    /// </summary>
+    /// <param name="initialPath"></param>
+    /// <param name="initialRegion"></param>
+    /// <param name="baseTexture"></param>
     public AtlasTextureEdits(string initialPath, Rect2 initialRegion, Texture2D baseTexture)
     {
         actualTexture = new AtlasTexture();
@@ -73,6 +99,10 @@ public class AtlasTextureEdits
         RecalculateHandles();
     }
 
+    /// <summary>
+    /// Used when tracking changes to an already existing AtlasTexture resource
+    /// </summary>
+    /// <param name="texture"></param>
     public AtlasTextureEdits(AtlasTexture texture)
     {
         actualTexture = texture;
@@ -80,6 +110,12 @@ public class AtlasTextureEdits
         RecalculateHandles();
     }
 
+    /// <summary>
+    /// Saves changes to this atlas texture to the filesystem. If ResourcePath is changed
+    /// then it will also be renamed/moved on the file system in this function. DO NOT CALL
+    /// EXCEPT FROM DoXAction FUNCTIONS! This ensures that every change made to a texture is
+    /// tracked in Godot's undo/redo history.
+    /// </summary>
     public void SaveResourceFile()
     {
         if (editedPath != actualTexture.ResourcePath && !string.IsNullOrEmpty(actualTexture.ResourcePath))
@@ -94,6 +130,13 @@ public class AtlasTextureEdits
         GD.Print("Saved AtlasTexture " + actualTexture.ResourcePath);
     }
 
+    /// <summary>
+    /// Check if the mouse position is on either the tracked AtlasTexture's region or one
+    /// of the eight drag/drop handles for resizing the texture.
+    /// </summary>
+    /// <param name="mousePosition"></param>
+    /// <param name="clickedHandle"></param>
+    /// <returns></returns>
     public bool GetClickIfAny(Vector2 mousePosition, ref int clickedHandle)
     {
         bool clicked = false;
@@ -121,6 +164,10 @@ public class AtlasTextureEdits
         return clicked;
     }
 
+    /// <summary>
+    /// Move the entire region the specified amount. No size change. Updates drag handle positions.
+    /// </summary>
+    /// <param name="distance"></param>
     public void MoveRegion(Vector2 distance)
     {
         Rect2 newRegion = Region;
@@ -129,8 +176,24 @@ public class AtlasTextureEdits
         RecalculateHandles();
     }
 
+    /// <summary>
+    /// Move the specified handle to the specified position. Moves/resizes the texture so it follows
+    /// the handle.
+    /// </summary>
+    /// <param name="handle">
+    /// 0 - top left
+    /// 1 - top middle
+    /// 2 - top right
+    /// 3 - middle (vertically) left
+    /// 4 - middle (vertically) right
+    /// 5 - bottom left
+    /// 6 - bottom middle
+    /// 7 - bottom right
+    /// </param>
+    /// <param name="position"></param>
     public void MoveHandleTo(int handle, Vector2 position)
     {
+        // TODO: disallow handles from being dragged outsize of the base texture's region
         Vector2 move = Vector2.Zero;
         Vector2 grow = Vector2.Zero;
         if (position.X < Region.Position.X)
@@ -193,6 +256,10 @@ public class AtlasTextureEdits
         RecalculateHandles();
     }
 
+    /// <summary>
+    /// Update the position of the handles based off of the size/position of
+    /// the tracked AtlasTexture region.
+    /// </summary>
     private void RecalculateHandles()
     {
         float left, midX, right;

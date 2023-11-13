@@ -60,22 +60,6 @@ public partial class QuickAtlasEditorWindow : Control
 	private AtlasTextureEdits selectedAtlasTexture;
 	private List<AtlasTextureEdits> textureEdits;
 
-	public string BasePath
-	{
-		get
-		{
-			return basePath;
-		}
-	}
-
-	public bool HasTarget
-	{
-		get
-		{
-			return currentBaseTexture != null;
-		}
-	}
-
 	public AtlasTextureEdits SelectedTexture
 	{
 		get
@@ -110,7 +94,12 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	public void Init(EditorInterface editorInterface, EditorUndoRedoManager undoRedo)
+    /// <summary>
+    /// Initialize references to objects that are normally only accessible to EditorPlugin
+    /// </summary>
+    /// <param name="editorInterface"></param>
+    /// <param name="undoRedo"></param>
+    public void Init(EditorInterface editorInterface, EditorUndoRedoManager undoRedo)
 	{
 		if (this.editorInterface != null) return;
 
@@ -122,18 +111,64 @@ public partial class QuickAtlasEditorWindow : Control
 		textureEdits = new List<AtlasTextureEdits>();
 	}
 
-	public void SetEditTargetByName(string target)
+    /// <summary>
+	/// DO NOT CALL THIS DIRECTLY! Use SetEditTarget instead
+	/// <para />
+    /// Loads the specified texture for use in creating AtlasTexture regions using it
+	/// as a source. If any exist already then this will create AtlasTextureEdits instances
+	/// to allow them to be modified if the user desires.
+	/// <para />
+    /// Called by Godot's undo/redo history to change the current source texture for
+    /// AtlasTextures to be edited. This needs to be in the undo history so that other
+    /// historic actions on AtlasTexture are done in the appropriate context.
+    /// </summary>
+    /// <param name="target"></param>
+    public void DoSetEditTargetAction(string target)
 	{
 		if (target == "null")
 		{
-			SetEditTargetInternal(null);
-		}
-		else
+            NoTargetOverlay.Visible = true;
+			currentBaseTexture = null;
+        }
+        else
 		{
-			SetEditTargetInternal(ResourceLoader.Load<Texture2D>(target));
-		}
-	}
+            // grab atlastexture paths from texture path
+            Texture2D targetTexture = ResourceLoader.Load<Texture2D>(target);
+            currentBaseTexture = targetTexture;
+            TexturePreviewArea.Texture = targetTexture;
 
+            textureEdits.Clear();
+
+            if (currentBaseTexture != null)
+            {
+                string atlasSource = currentBaseTexture.ResourcePath;
+
+                GD.Print("Getting atlas textures from " + atlasSource);
+                List<string> textureNames = textureAtlasRefs[atlasSource];
+                foreach (string textureName in textureNames)
+                {
+                    GD.Print("\t" + textureName);
+                    textureEdits.Add(new AtlasTextureEdits(ResourceLoader.Load<AtlasTexture>(textureName)));
+                }
+            }
+
+            PreviewControls.SetAtlasSource(textureEdits);
+            basePath = targetTexture.ResourcePath.Substr(0, targetTexture.ResourcePath.LastIndexOf('/'));
+            RegionX.MaxValue = currentBaseTexture.GetWidth();
+            RegionY.MaxValue = currentBaseTexture.GetHeight();
+            RegionW.MaxValue = currentBaseTexture.GetWidth();
+            RegionH.MaxValue = currentBaseTexture.GetHeight();
+            NoTargetOverlay.Visible = false;
+        }
+    }
+
+	/// <summary>
+	/// Called by the plugin entry point to start modifying AtlasTextures associated with
+	/// the given texture. If this is called with an AtlasTexture as the target it will
+	/// instead use the AtlasTexture's source texture as a target since this is not built
+	/// to allow AtlasTexture instances to be sourced from other AtlasTexture instances
+	/// </summary>
+	/// <param name="target"></param>
 	public void SetEditTarget(Texture2D target)
 	{
 		AtlasTexture targetAsAtlas = target as AtlasTexture;
@@ -145,11 +180,9 @@ public partial class QuickAtlasEditorWindow : Control
 		if (target != currentBaseTexture)
 		{
 			undoRedo.CreateAction("QuickAtlas - Change source atlas", UndoRedo.MergeMode.Ends, this);
-			undoRedo.AddDoMethod(this, "SetEditTargetByName", target != null ? target.ResourcePath : "null");
-			undoRedo.AddUndoMethod(this, "SetEditTargetByName", currentBaseTexture != null ? currentBaseTexture.ResourcePath : "null");
-			undoRedo.CommitAction(false);
-
-			SetEditTargetInternal(target);
+			undoRedo.AddDoMethod(this, "DoSetEditTargetAction", target != null ? target.ResourcePath : "null");
+			undoRedo.AddUndoMethod(this, "DoSetEditTargetAction", currentBaseTexture != null ? currentBaseTexture.ResourcePath : "null");
+			undoRedo.CommitAction();
 		}
 
 		if (targetAsAtlas != null)
@@ -161,6 +194,7 @@ public partial class QuickAtlasEditorWindow : Control
 					SelectedTexture = textureEdits[i];
 
 					// center the selection in the preview area
+					// TODO: there's a bug here, this won't center properly if this is the first time the target texture is set(?)
 					Vector2 previewCenter = PreviewContainer.Size * 0.5f;
 					Vector2 halfSize = SelectedTexture.Region.Size * 0.5f;
 					Vector2 scrollPos = SelectedTexture.Region.Position - (previewCenter - halfSize);
@@ -174,7 +208,14 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	// this one does initial setup for a new texture but does not commit it to the filesystem
+	/// <summary>
+	/// First step in creating a new AtlasTexture. Creates the internal tracking object
+	/// for the AtlasTexture with its region starting at the given position but does not
+	/// commit it to the filesystem. This texture will start with a size of 0x0 and MUST be
+	/// resized before it can be saved.
+	/// </summary>
+	/// <param name="position"></param>
+	/// <returns></returns>
 	public AtlasTextureEdits StartNewTexture(Vector2 position)
 	{
 		newTextureCounter++;
@@ -185,6 +226,11 @@ public partial class QuickAtlasEditorWindow : Control
 		return newTexture;
 	}
 
+	/// <summary>
+	/// Final step in creating a new AtlasTexture. Commits it to Godot's undo history and saves the
+	/// texture to the filesystem and ensures all internal tracking is up to date.
+	/// </summary>
+	/// <param name="editedTexture"></param>
 	public void DoAddNewTextureAction(AtlasTextureEdits editedTexture)
 	{
 		undoRedo.CreateAction("QuickAtlas - Create AtlasTexture Region");
@@ -193,6 +239,11 @@ public partial class QuickAtlasEditorWindow : Control
 		undoRedo.CommitAction();
 	}
 
+	/// <summary>
+	/// Changes the size of the currently selected texture and commits the action to Godot's
+	/// undo history.
+	/// </summary>
+	/// <param name="newRegion"></param>
 	public void DoChangeRegionAction(Rect2 newRegion)
 	{
 		undoRedo.CreateAction("QuickAtlas - Region");
@@ -201,7 +252,13 @@ public partial class QuickAtlasEditorWindow : Control
 		undoRedo.CommitAction();
 	}
 
-	// this commits a new texture to the filesystem and is called by undo/redo actions
+	/// <summary>
+	/// DO NOT CALL DIRECTLY! This is called by the Godot editor to commit a new AtlasTexture
+	/// to the filesystem. Updates internal Texure -> AtlasTexture[] tracking data as well.
+	/// </summary>
+	/// <param name="newResourcePath"></param>
+	/// <param name="newRegion"></param>
+	/// <exception cref="System.Exception"></exception>
 	public void AddTextureRegion(string newResourcePath, Rect2 newRegion)
 	{
 		GD.Print("(Re)create AtlasTexture ", newResourcePath, newRegion);
@@ -245,7 +302,14 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	public void ChangeTextureResourcePath(string oldResourcePath, string newResourcePath)
+    /// <summary>
+    /// DO NOT CALL DIRECTLY! This is called by the Godot editor to commit renaming or moving
+	/// an AtlasTexture resource in the filesystem. Updates internal Texure -> AtlasTexture[]
+	/// tracking data as well.
+    /// </summary>
+	/// <param name="oldResourcePath"></param>
+	/// <param name="newResourcePath"></param>
+    public void ChangeTextureResourcePath(string oldResourcePath, string newResourcePath)
 	{
 		if (oldResourcePath == newResourcePath)
 		{
@@ -285,12 +349,17 @@ public partial class QuickAtlasEditorWindow : Control
 		GD.Print("Cannot find AtlasTexture, probably associated with different parent than selected ", oldResourcePath);
 	}
 
-	public void DeleteTextureRegion(string newResourcePath)
+    /// <summary>
+    /// DO NOT CALL DIRECTLY! This is called by the Godot editor to commit deletion of an AtlasTexture
+	/// resource from the filesystem. Updates internal Texure -> AtlasTexture[] tracking data as well.
+    /// </summary>
+    /// <param name="targetResourcePath"></param>
+    public void DeleteTextureRegion(string targetResourcePath)
 	{
-		GD.Print("Delete AtlasTexture ", newResourcePath);
+		GD.Print("Delete AtlasTexture ", targetResourcePath);
 		for (int i = 0; i < textureEdits.Count; i++)
 		{
-			if (textureEdits[i].ResourcePath == newResourcePath)
+			if (textureEdits[i].ResourcePath == targetResourcePath)
 			{
 				File.Delete(ProjectSettings.GlobalizePath(selectedAtlasTexture.ResourcePath));
 				textureAtlasRefs[currentBaseTexture.ResourcePath].Remove(selectedAtlasTexture.ResourcePath);
@@ -305,7 +374,18 @@ public partial class QuickAtlasEditorWindow : Control
 		GD.Print("Deleting AtlasTexture that was already deleted");
 	}
 
-	public void ChangeRegion(string resourcePath, Rect2 newRegion)
+    /// <summary>
+    /// DO NOT CALL DIRECTLY! This is called by the Godot editor to commit changes to the
+	/// specified AtlasTexture's region. Used for both resize and move operations. Saves
+	/// changes to the filesystem.
+	/// <para />
+	/// Note that this is not used in creation since the create action is expected to be
+	/// done after the user is done providing a size. This keeps undo history cleaner and
+	/// prevents Undo from producing a useless 0x0 texture.
+    /// </summary>
+    /// <param name="resourcePath"></param>
+    /// <param name="newRegion"></param>
+    public void ChangeRegion(string resourcePath, Rect2 newRegion)
 	{
 		GD.Print("Change Region ", resourcePath);
 		for (int i = 0; i < textureEdits.Count; i++)
@@ -319,7 +399,13 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	public void ChangeMargin(string resourcePath, Rect2 newMargin)
+    /// <summary>
+    /// DO NOT CALL DIRECTLY! This is called by the Godot editor to commit changes to the
+	/// specified AtlasTexture's margin. Saves changes to the filesystem.
+    /// </summary>
+    /// <param name="resourcePath"></param>
+    /// <param name="newMargin"></param>
+    public void ChangeMargin(string resourcePath, Rect2 newMargin)
 	{
 		GD.Print("Change Margin ", resourcePath);
 		for (int i = 0; i < textureEdits.Count; i++)
@@ -333,7 +419,13 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
-	public void SetFilterClip(string resourcePath, bool value)
+    /// <summary>
+    /// DO NOT CALL DIRECTLY! This is called by the Godot editor to commit changes to the
+	/// filter_clip property of an AtlasTexture. Saves changes to the filesystem.
+    /// </summary>
+    /// <param name="resourcePath"></param>
+    /// <param name="value"></param>
+    public void SetFilterClip(string resourcePath, bool value)
 	{
 		GD.Print("Change FilterClip ", resourcePath);
 		for (int i = 0; i < textureEdits.Count; i++)
@@ -347,6 +439,11 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
+	/// <summary>
+	/// Event handler. Called when Godot detects a change to the filesystem and is used
+	/// to update internal tracking of associations between Texture2D resources and
+	/// AtlasTexture resources.
+	/// </summary>
 	private void _FilesystemChanged()
 	{
 		GD.Print("File system state changed. Rebuilding AtlasTexture dictionary");
@@ -354,17 +451,28 @@ public partial class QuickAtlasEditorWindow : Control
 		UpdateControlValues();
 	}
 
+	/// <summary>
+	/// Signal handler for the Rename... button.
+	/// </summary>
 	private void _OnRenamePressed()
 	{
 		FileDialog.CurrentPath = selectedAtlasTexture.ResourcePath;
 		FileDialog.Show();
 	}
 
+	/// <summary>
+	/// Signal handler. Rename the selected texture to the selected file. File dialog is opened
+	/// when Rename... is clicked.
+	/// </summary>
+	/// <param name="path"></param>
 	private void _OnFileDialogSelected(string path)
 	{
 		DoRenameAction(path);
 	}
 
+	/// <summary>
+	/// Signal handler for the Delete button. Action requires confirmation.
+	/// </summary>
 	private void _OnDeletePressed()
 	{
 		string name = SelectedTexture.ResourcePath.Substring(SelectedTexture.ResourcePath.LastIndexOf("/") + 1);
@@ -372,6 +480,9 @@ public partial class QuickAtlasEditorWindow : Control
 		ConfirmationDialog.Show();
 	}
 
+	/// <summary>
+	/// Signal handler for the Delete button's confirmation dialog.
+	/// </summary>
 	private void _OnConfirmed()
 	{
 		undoRedo.CreateAction("QuickAtlas - Delete AtlasTexture Region", UndoRedo.MergeMode.Disable, this);
@@ -380,16 +491,28 @@ public partial class QuickAtlasEditorWindow : Control
 		undoRedo.CommitAction(true);
 	}
 
+	/// <summary>
+	/// Signal handler for Delete button's confirmation dialog.
+	/// </summary>
 	private void _OnCancelled()
 	{
 		GD.Print("AtlasTexture delete cancelled");
 	}
 
+	/// <summary>
+	/// Signal handler for the user pressing RETURN on the AtlasTexture's resource
+	/// path/name text box. Immediately tries to rename the resource.
+	/// </summary>
+	/// <param name="path"></param>
 	private void _OnResourcePathChangeSubmit(string path)
 	{
 		DoRenameAction(path);
 	}
 
+	/// <summary>
+	/// Signal handler for the Filter Clip checkbox.
+	/// </summary>
+	/// <param name="value"></param>
 	private void _OnFilterClipCheckboxToggled(bool value)
 	{
 		undoRedo.CreateAction("QuickAtlas - Filter Clip");
@@ -398,6 +521,10 @@ public partial class QuickAtlasEditorWindow : Control
 		undoRedo.CommitAction();
 	}
 
+	/// <summary>
+	/// Signal handler for one of the Region text boxes
+	/// </summary>
+	/// <param name="value"></param>
 	private void _OnChangedRegionX(double value)
 	{
 		Rect2 newRegion = selectedAtlasTexture.Region;
@@ -405,34 +532,54 @@ public partial class QuickAtlasEditorWindow : Control
 		DoChangeRegionAction(newRegion);
 	}
 
-	private void _OnChangedRegionY(double value)
+    /// <summary>
+    /// Signal handler for one of the Region text boxes
+    /// </summary>
+    /// <param name="value"></param>
+    private void _OnChangedRegionY(double value)
 	{
 		Rect2 newRegion = selectedAtlasTexture.Region;
 		newRegion.Position = new Vector2(newRegion.Position.X, (float)value);
 		DoChangeRegionAction(newRegion);
 	}
 
-	private void _OnChangedRegionW(double value)
+    /// <summary>
+    /// Signal handler for one of the Region text boxes
+    /// </summary>
+    /// <param name="value"></param>
+    private void _OnChangedRegionW(double value)
 	{
 		Rect2 newRegion = selectedAtlasTexture.Region;
 		newRegion.Size = new Vector2((float)value, newRegion.Size.Y);
 		DoChangeRegionAction(newRegion);
 	}
 
-	private void _OnChangedRegionH(double value)
+    /// <summary>
+    /// Signal handler for one of the Region text boxes
+    /// </summary>
+    /// <param name="value"></param>
+    private void _OnChangedRegionH(double value)
 	{
 		Rect2 newRegion = selectedAtlasTexture.Region;
 		newRegion.Size = new Vector2(newRegion.Size.X, (float)value);
 		DoChangeRegionAction(newRegion);
 	}
 
-	private void _OnChangedMarginX(double value)
+    /// <summary>
+    /// Signal handler for one of the Margin text boxes
+    /// </summary>
+    /// <param name="value"></param>
+    private void _OnChangedMarginX(double value)
 	{
 		Rect2 newMargin = selectedAtlasTexture.Margin;
 		newMargin.Position = new Vector2((float)value, newMargin.Position.Y);
 		DoChangeMarginAction(newMargin);
 	}
 
+    /// <summary>
+    /// Signal handler for one of the Margin text boxes
+    /// </summary>
+    /// <param name="value"></param>
 	private void _OnChangedMarginY(double value)
 	{
 		Rect2 newMargin = selectedAtlasTexture.Margin;
@@ -440,6 +587,10 @@ public partial class QuickAtlasEditorWindow : Control
 		DoChangeMarginAction(newMargin);
 	}
 
+    /// <summary>
+    /// Signal handler for one of the Margin text boxes
+    /// </summary>
+    /// <param name="value"></param>
 	private void _OnChangedMarginW(double value)
 	{
 		Rect2 newMargin = selectedAtlasTexture.Margin;
@@ -447,6 +598,10 @@ public partial class QuickAtlasEditorWindow : Control
 		DoChangeMarginAction(newMargin);
 	}
 
+    /// <summary>
+    /// Signal handler for one of the Margin text boxes
+    /// </summary>
+    /// <param name="value"></param>
 	private void _OnChangedMarginH(double value)
 	{
 		Rect2 newMargin = selectedAtlasTexture.Margin;
@@ -454,6 +609,11 @@ public partial class QuickAtlasEditorWindow : Control
 		DoChangeMarginAction(newMargin);
 	}
 
+	/// <summary>
+	/// Commits changes to the selected AtlasTexture's margin to the filesystem and
+	/// Godot's undo history.
+	/// </summary>
+	/// <param name="newMargin"></param>
 	private void DoChangeMarginAction(Rect2 newMargin)
 	{
 		undoRedo.CreateAction("QuickAtlas - Margin");
@@ -462,7 +622,34 @@ public partial class QuickAtlasEditorWindow : Control
 		undoRedo.CommitAction();
 	}
 
-	private void RebuildResourceDictionary()
+	/// <summary>
+	/// Commits a new name for the selected AtlasTexture to the filesystem and
+	/// Godot's undo history
+	/// </summary>
+	/// <param name="newPath"></param>
+    private void DoRenameAction(string newPath)
+    {
+        if (!newPath.EndsWith(".tres"))
+        {
+            GD.Print("Specified resource path without .tres extension. Adding.");
+            newPath += ".tres";
+        }
+
+        string oldPath = selectedAtlasTexture.ResourcePath;
+        undoRedo.CreateAction("QuickAtlas - Change resource path", UndoRedo.MergeMode.Disable, this);
+        undoRedo.AddDoMethod(this, "ChangeTextureResourcePath", oldPath, newPath);
+        undoRedo.AddUndoMethod(this, "ChangeTextureResourcePath", newPath, oldPath);
+        undoRedo.CommitAction();
+    }
+
+    /// <summary>
+    /// Walks the project's directory tree and detects all existing Texture2D resource.
+    /// 
+    /// From that this builds a dictionary mapping base Texture resources to any AtlasTextures that
+    /// reference them as a source. This is used for creating AtlasTextureEdits objects when
+    /// the user selects a Texture2D in the Filesystem dock of the Godot editor.
+    /// </summary>
+    private void RebuildResourceDictionary()
 	{
 		List<string> allResources = new List<string>();
 
@@ -500,73 +687,35 @@ public partial class QuickAtlasEditorWindow : Control
 		}
 	}
 
+	/// <summary>
+	/// Recursively walk the directory tree. Any resources found are added to the output list.
+	/// </summary>
+	/// <param name="directory"></param>
+	/// <param name="output"></param>
 	private void WalkProjectResources(EditorFileSystemDirectory directory, List<string> output)
 	{
-		var c = directory.GetFileCount();
-		for (int i = 0; i < c; i++)
+		var fileCount = directory.GetFileCount();
+		for (int i = 0; i < fileCount; i++)
 		{
 			output.Add(directory.GetFilePath(i));
 		}
 
-		var d = directory.GetSubdirCount();
-		for (int i = 0; i < d; i++)
+		var directoryCount = directory.GetSubdirCount();
+		for (int i = 0; i < directoryCount; i++)
 		{
 			WalkProjectResources(directory.GetSubdir(i), output);
 		}
 	}
 
-	private void SetEditTargetInternal(Texture2D target)
-	{
-		// grab atlastexture paths from texture path
-		currentBaseTexture = target;
-		TexturePreviewArea.Texture = target;
-
-		textureEdits.Clear();
-
-		if (currentBaseTexture != null)
-		{
-			string atlasSource = currentBaseTexture.ResourcePath;
-
-			GD.Print("Getting atlas textures from " + atlasSource);
-			List<string> textureNames = textureAtlasRefs[atlasSource];
-			foreach (string textureName in textureNames)
-			{
-				GD.Print("\t" + textureName);
-				textureEdits.Add(new AtlasTextureEdits(ResourceLoader.Load<AtlasTexture>(textureName)));
-			}
-		}
-
-		PreviewControls.SetAtlasSource(textureEdits);
-		if (target != null)
-		{
-			basePath = target.ResourcePath.Substr(0, target.ResourcePath.LastIndexOf('/'));
-			RegionX.MaxValue = currentBaseTexture.GetWidth();
-			RegionY.MaxValue = currentBaseTexture.GetHeight();
-			RegionW.MaxValue = currentBaseTexture.GetWidth();
-			RegionH.MaxValue = currentBaseTexture.GetHeight();
-			NoTargetOverlay.Visible = false;
-		}
-		else
-		{
-			NoTargetOverlay.Visible = true;
-		}
-	}
-
-	private void DoRenameAction(string newPath)
-	{
-		if (!newPath.EndsWith(".tres"))
-		{
-			GD.Print("Specified resource path without .tres extension. Adding.");
-			newPath += ".tres";
-		}
-
-		string oldPath = selectedAtlasTexture.ResourcePath;
-		undoRedo.CreateAction("QuickAtlas - Change resource path", UndoRedo.MergeMode.Disable, this);
-		undoRedo.AddDoMethod(this, "ChangeTextureResourcePath", oldPath, newPath);
-		undoRedo.AddUndoMethod(this, "ChangeTextureResourcePath", newPath, oldPath);
-		undoRedo.CommitAction();
-	}
-
+	/// <summary>
+	/// Updates control values with current properties of the selected AtlasTexture.
+	/// Use when the selection is changed, an action is undone or when a property
+	/// is modified via an action done on AtlasPreviewControls.
+	/// </summary>
+	/// <note>
+	/// Only ever use Set(thing)NoSignal in this. Only to be used in response to 
+	/// an external change and not to commit modifications.
+	/// </note>
 	private void UpdateControlValues()
 	{
 		PreviewControls.QueueRedraw();

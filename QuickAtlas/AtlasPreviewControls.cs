@@ -1,6 +1,16 @@
 using Godot;
 using System.Collections.Generic;
 
+/// <summary>
+/// Main script for the scrollable preview of the current source texture being
+/// used for creating/editing AtlasTexture resources. Draws boxes with handles
+/// for each existing texture to allow modification by drag+drop. Also is responsible
+/// for creating new regions when dragging in an area not occupied by an AtlasTexture
+/// 
+/// The QuickAtlasEditorWindow object is responsible for the actual work of
+/// creating and maintining the list of AtlasTextureEdits tracking objects as
+/// well as committing any changes to the filesystem. This only handles user input.
+/// </summary>
 [Tool]
 public partial class AtlasPreviewControls : Control
 {
@@ -13,16 +23,15 @@ public partial class AtlasPreviewControls : Control
     [Export]
     ScrollContainer scrollArea;
 
-    // this is supplied by the Init function and populated elsewhere
-    // DO NOT ADD OR REMOVE ITEMS!
-    private List<AtlasTextureEdits> textures;
-
-    // these members can be modified
-    private int newTextureCounter;
-
+    /// true indicates the current drag operation is for creating a new AtlasTexture
     private bool addingNewTexture;
+
     private AtlasTextureEdits clickedTexture;
     private int clickedHandle;
+
+    // this is supplied by the Init function and populated by QuickAtlasEditorWindow
+    // DO NOT ADD OR REMOVE ITEMS!
+    private List<AtlasTextureEdits> textures;
 
     public void SetAtlasSource(List<AtlasTextureEdits> textures) 
 	{
@@ -73,6 +82,7 @@ public partial class AtlasPreviewControls : Control
                         clickedTexture = window.StartNewTexture(mouseEvent.Position);
 
                         // bottom right, arbitrary but should give decent ability to size and fit workflow
+                        // NOTE: gets janky if the user drags in any direction besides down and right
                         clickedHandle = 7;
                         addingNewTexture = true;
                     }
