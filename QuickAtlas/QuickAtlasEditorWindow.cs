@@ -128,7 +128,23 @@ public partial class QuickAtlasEditorWindow : Control
         if (target == "null")
         {
             NoTargetOverlay.Visible = true;
+
+            // set all controls to a default blank state when nothing is selected
             currentBaseTexture = null;
+            SubTexturePreviewArea.Texture = null;
+            TexturePreviewArea.Texture = null;
+            PreviewControls.SetAtlasSource(null);
+
+            ResourceName.Text = string.Empty;
+            RegionX.SetValueNoSignal(0);
+            RegionY.SetValueNoSignal(0);
+            RegionW.SetValueNoSignal(0);
+            RegionH.SetValueNoSignal(0);
+            MarginX.SetValueNoSignal(0);
+            MarginY.SetValueNoSignal(0);
+            MarginW.SetValueNoSignal(0);
+            MarginH.SetValueNoSignal(0);
+            FilterClip.SetPressedNoSignal(false);
         }
         else
         {
