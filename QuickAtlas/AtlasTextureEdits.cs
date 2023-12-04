@@ -181,6 +181,9 @@ public class AtlasTextureEdits
     /// the handle.
     /// </summary>
     /// <param name="handle">
+    /// This can change when the drag operation changes the handle's relative location
+    /// (e.g. when dragging the right side across the left this will change from 4 to 3)
+    /// 
     /// 0 - top left
     /// 1 - top middle
     /// 2 - top right
@@ -191,60 +194,80 @@ public class AtlasTextureEdits
     /// 7 - bottom right
     /// </param>
     /// <param name="position"></param>
-    public void MoveHandleTo(int handle, Vector2 position)
+    public void MoveHandleTo(ref int handle, Vector2 position)
     {
+        // TODO: add dummy handle index to allow swapping selected handle with MAAAATH!!!
         // TODO: disallow handles from being dragged outsize of the base texture's region
         Vector2 move = Vector2.Zero;
         Vector2 grow = Vector2.Zero;
-        if (position.X < Region.Position.X)
+        if (handle == 0 || handle == 3 || handle == 5)
         {
-            grow.X = Region.Position.X - position.X;
-            move.X = -grow.X;
-        }
-        else if (position.X > Region.Position.X + Region.Size.X)
-        {
-            grow.X = position.X - (Region.Position.X + Region.Size.X);
-            move.X = 0;
-        }
-        else
-        {
-            if (handle == 0 || handle == 3 || handle == 5)
+            // dragging the left around
+            float distance = position.X - Region.Position.X;
+            move.X = distance;
+            grow.X = -distance;
+            if(distance > Region.Size.X)
             {
-                // dragging the left side inward (right)
-                grow.X = Region.Position.X - position.X;
-                move.X = -grow.X;
+                // moving left side past the right side
+                move.X = Region.Size.X;
+                grow.X = distance - Region.Size.X;
+
+                // swap selected handle to the right side to allow smooth drag
+                if (handle == 0) handle = 2;
+                if (handle == 3) handle = 4;
+                if (handle == 5) handle = 7;
             }
-            else if (handle == 2 || handle == 4 || handle == 7)
+        }
+        else if (handle == 2 || handle == 4 || handle == 7)
+        {
+            // dragging the right around
+            float distance = position.X - (Region.Position.X + Region.Size.X);
+            grow.X = distance;
+            if (distance < -Region.Size.X)
             {
-                // dragging the right side inward (left)
-                grow.X = position.X - (Region.Position.X + Region.Size.X);
-                move.X = 0;
+                // moving the right side past the left side
+                move.X = distance - (-Region.Size.X);
+                grow.X = -distance - Region.Size.X * 2;
+
+                // swap selected handle to the left side to allow smooth drag
+                if (handle == 2) handle = 0;
+                if (handle == 4) handle = 3;
+                if (handle == 7) handle = 5;
             }
         }
 
-        if (position.Y < Region.Position.Y)
+        if (handle == 0 || handle == 1 || handle == 2)
         {
-            grow.Y = Region.Position.Y - position.Y;
-            move.Y = -grow.Y;
-        }
-        else if (position.Y > Region.Position.Y + Region.Size.Y)
-        {
-            grow.Y = position.Y - (Region.Position.Y + Region.Size.Y);
-            move.Y = 0;
-        }
-        else
-        {
-            if (handle == 0 || handle == 1 || handle == 2)
+            // dragging the top around
+            float distance = position.Y - Region.Position.Y;
+            move.Y = distance;
+            grow.Y = -distance;
+
+            if (distance > Region.Size.Y)
             {
-                // dragging the top downward
-                grow.Y = Region.Position.Y - position.Y;
-                move.Y = -grow.Y;
+                // moving top past the bottom
+                move.Y = Region.Size.Y;
+                grow.Y = distance - Region.Size.Y;
+
+                // swap selected handle to the left side to allow smooth drag
+                // 0 -> 5 swaps from top to bottom +1 for each increment to the right
+                handle += 5;
             }
-            else if (handle == 5 || handle == 6 || handle == 7)
+        }
+        else if(handle == 5 || handle == 6 || handle == 7)
+        {
+            // dragging the bottom around
+            float distance = position.Y - (Region.Position.Y + Region.Size.Y);
+            grow.Y = distance;
+            if (distance < -Region.Size.Y)
             {
-                // dragging the bottom upward
-                grow.Y = position.Y - (Region.Position.Y + Region.Size.Y);
-                move.Y = 0;
+                // moving bottom past top
+                move.Y = distance - (-Region.Size.Y);
+                grow.Y = -distance - Region.Size.Y * 2;
+
+                // swap selected handle to the top side to allow smooth drag
+                // 5 -> 0 swaps from bottom to top +1 for each increment to the right
+                handle -= 5;
             }
         }
 
