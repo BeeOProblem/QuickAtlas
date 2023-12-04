@@ -208,14 +208,7 @@ public partial class QuickAtlasEditorWindow : Control
                 if (textureEdits[i].actualTexture.ResourcePath == targetAsAtlas.ResourcePath)
                 {
                     SelectedTexture = textureEdits[i];
-
-                    // center the selection in the preview area
-                    // TODO: there's a bug here, this won't center properly if this is the first time the target texture is set(?)
-                    Vector2 previewCenter = PreviewContainer.Size * 0.5f;
-                    Vector2 halfSize = SelectedTexture.Region.Size * 0.5f;
-                    Vector2 scrollPos = SelectedTexture.Region.Position - (previewCenter - halfSize);
-                    PreviewContainer.ScrollHorizontal = (int)scrollPos.X;
-                    PreviewContainer.ScrollVertical = (int)scrollPos.Y;
+                    CallDeferred("CenterView");
                     return;
                 }
             }
@@ -623,6 +616,18 @@ public partial class QuickAtlasEditorWindow : Control
         Rect2 newMargin = selectedAtlasTexture.Margin;
         newMargin.Size = new Vector2(newMargin.Size.X, (float)value);
         DoChangeMarginAction(newMargin);
+    }
+
+    /// <summary>
+    /// Center the selected AtlasTexture region in the preview area
+    /// </summary>
+    private void CenterView()
+    {
+        Vector2 previewCenter = PreviewContainer.Size * 0.5f;
+        Vector2 halfSize = SelectedTexture.Region.Size * 0.5f;
+        Vector2 scrollPos = SelectedTexture.Region.Position - (previewCenter - halfSize);
+        PreviewContainer.SetDeferred("scroll_horizontal", (int)scrollPos.X);
+        PreviewContainer.SetDeferred("scroll_vertical", (int)scrollPos.Y);
     }
 
     /// <summary>
