@@ -264,7 +264,7 @@ public partial class QuickAtlasEditorWindow : Control
     {
         undoRedo.CreateAction("QuickAtlas - Region");
         undoRedo.AddDoMethod(this, "ChangeRegion", selectedAtlasTexture.ResourcePath, newRegion);
-        undoRedo.AddUndoMethod(this, "ChangeRegion", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.Region);
+        undoRedo.AddUndoMethod(this, "ChangeRegion", selectedAtlasTexture.ResourcePath, selectedAtlasTexture.OriginalRegion);
         undoRedo.CommitAction();
     }
 

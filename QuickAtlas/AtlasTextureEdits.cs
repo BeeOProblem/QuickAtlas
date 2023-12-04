@@ -49,6 +49,14 @@ public class AtlasTextureEdits
     }
 
     /// <summary>
+    /// Gets the most recently saved AtlasTexture Region
+    /// </summary>
+    public Rect2 OriginalRegion
+    {
+        get; private set;
+    }
+
+    /// <summary>
     /// Does not update the actual resource file until SaveResourceFile is called
     /// </summary>
     public Rect2 Region
@@ -92,6 +100,7 @@ public class AtlasTextureEdits
     /// <param name="baseTexture"></param>
     public AtlasTextureEdits(string initialPath, Rect2 initialRegion, Texture2D baseTexture)
     {
+        OriginalRegion = initialRegion;
         actualTexture = new AtlasTexture();
         actualTexture.Atlas = baseTexture;
         actualTexture.Region = initialRegion;
@@ -124,6 +133,7 @@ public class AtlasTextureEdits
             Directory.Move(ProjectSettings.GlobalizePath(actualTexture.ResourcePath), ProjectSettings.GlobalizePath(editedPath));
         }
 
+        OriginalRegion = actualTexture.Region;
         actualTexture.TakeOverPath(editedPath);
         actualTexture.ResourcePath = editedPath;
         ResourceSaver.Save(actualTexture, editedPath);
