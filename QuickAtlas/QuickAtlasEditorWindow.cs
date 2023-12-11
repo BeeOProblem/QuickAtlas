@@ -127,13 +127,14 @@ public partial class QuickAtlasEditorWindow : Control
     {
         if (target == "null")
         {
+            // TODO: calling with target of null in middle of setting valid edit target
             NoTargetOverlay.Visible = true;
 
             // set all controls to a default blank state when nothing is selected
             currentBaseTexture = null;
             SubTexturePreviewArea.Texture = null;
             TexturePreviewArea.Texture = null;
-            PreviewControls.SetAtlasSource(null);
+            PreviewControls.SetAtlasSource(null, null);
 
             ResourceName.Text = string.Empty;
             RegionX.SetValueNoSignal(0);
@@ -168,7 +169,7 @@ public partial class QuickAtlasEditorWindow : Control
                 }
             }
 
-            PreviewControls.SetAtlasSource(textureEdits);
+            PreviewControls.SetAtlasSource(targetTexture, textureEdits);
             basePath = targetTexture.ResourcePath.Substr(0, targetTexture.ResourcePath.LastIndexOf('/'));
             RegionX.MaxValue = currentBaseTexture.GetWidth();
             RegionY.MaxValue = currentBaseTexture.GetHeight();
@@ -208,7 +209,7 @@ public partial class QuickAtlasEditorWindow : Control
                 if (textureEdits[i].actualTexture.ResourcePath == targetAsAtlas.ResourcePath)
                 {
                     SelectedTexture = textureEdits[i];
-                    CallDeferred("CenterView");
+                    PreviewControls.CallDeferred("CenterView");
                     return;
                 }
             }
@@ -616,18 +617,6 @@ public partial class QuickAtlasEditorWindow : Control
         Rect2 newMargin = selectedAtlasTexture.Margin;
         newMargin.Size = new Vector2(newMargin.Size.X, (float)value);
         DoChangeMarginAction(newMargin);
-    }
-
-    /// <summary>
-    /// Center the selected AtlasTexture region in the preview area
-    /// </summary>
-    private void CenterView()
-    {
-        Vector2 previewCenter = PreviewContainer.Size * 0.5f;
-        Vector2 halfSize = SelectedTexture.Region.Size * 0.5f;
-        Vector2 scrollPos = SelectedTexture.Region.Position - (previewCenter - halfSize);
-        PreviewContainer.SetDeferred("scroll_horizontal", (int)scrollPos.X);
-        PreviewContainer.SetDeferred("scroll_vertical", (int)scrollPos.Y);
     }
 
     /// <summary>
