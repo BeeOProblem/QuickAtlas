@@ -165,14 +165,13 @@ public partial class AtlasPreviewControls : Control
         AcceptEvent();
         QueueRedraw();
 
-        Vector2 scaledMousePosition = mouseEvent.Position / zoomScaleValue;
         if (mouseEvent.Pressed)
         {
             addingNewTexture = false;
             clickedTexture = null;
             foreach (AtlasTextureEdits texture in textures)
             {
-                if (texture.GetClickIfAny(scaledMousePosition, ref clickedHandle))
+                if (texture.GetClickIfAny(mouseEvent.Position, zoomScaleValue, ref clickedHandle))
                 {
                     clickedTexture = texture;
                     break;
@@ -181,7 +180,7 @@ public partial class AtlasPreviewControls : Control
 
             if (clickedTexture == null)
             {
-                clickedTexture = window.StartNewTexture(scaledMousePosition);
+                clickedTexture = window.StartNewTexture(mouseEvent.Position / zoomScaleValue);
 
                 // bottom right, arbitrary but should give decent ability to size and fit workflow
                 // NOTE: gets janky if the user drags in any direction besides down and right

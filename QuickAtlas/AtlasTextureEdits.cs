@@ -147,10 +147,10 @@ public class AtlasTextureEdits
     /// <param name="mousePosition"></param>
     /// <param name="clickedHandle"></param>
     /// <returns></returns>
-    public bool GetClickIfAny(Vector2 mousePosition, ref int clickedHandle)
+    public bool GetClickIfAny(Vector2 mousePosition, float zoomScaleValue, ref int clickedHandle)
     {
         bool clicked = false;
-        if (Region.HasPoint(mousePosition))
+        if (Region.HasPoint(mousePosition / zoomScaleValue))
         {
             GD.Print(string.Format("Mouse pressed on texture {0}", ResourcePath));
             clicked = true;
@@ -160,7 +160,12 @@ public class AtlasTextureEdits
         int i = 0;
         foreach (Rect2 handle in Handles)
         {
-            if (handle.HasPoint(mousePosition))
+            // we use a handle that's artifically enlarged to determine if the mouse is on it
+            // so that, no matter what the zoom level is the clickable area is the same size
+            Rect2 scaledHandle = new Rect2(handle.Position + handle.Size * 0.5f, handle.Size / zoomScaleValue);
+            scaledHandle.Position -= scaledHandle.Size * 0.5f;
+
+            if (scaledHandle.HasPoint(mousePosition / zoomScaleValue))
             {
                 GD.Print(string.Format("Mouse pressed on handle {0} of {1}", i,ResourcePath));
                 clickedHandle = i;
