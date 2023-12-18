@@ -10,6 +10,7 @@ public partial class QuickAtlas : EditorPlugin
 	public override void _Clear ()
 	{
 		dock.SetEditTarget(null);
+		
 	}
 
     public override void _EnterTree()

@@ -1,12 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbkh0568n1vq4"]
+[gd_scene load_steps=9 format=3 uid="uid://cbkh0568n1vq4"]
 
 [ext_resource type="Script" path="res://addons/QuickAtlas/QuickAtlasEditorWindow.cs" id="1_cb2dl"]
 [ext_resource type="Script" path="res://addons/QuickAtlas/GuiEventRelay.cs" id="2_v703o"]
 [ext_resource type="Script" path="res://addons/QuickAtlas/AtlasPreviewControls.cs" id="3_mqi3u"]
 [ext_resource type="Texture2D" uid="uid://c7mvb7or1iboq" path="res://Player/PlayerFire2.tres" id="3_uosu3"]
+[ext_resource type="Script" path="res://addons/QuickAtlas/UseEditorIcon.cs" id="4_nfg46"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hu7o0"]
 bg_color = Color(0.128906, 0.148438, 0.179688, 1)
+
+[sub_resource type="Image" id="Image_k4h7w"]
+data = {
+"data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 93, 93, 41, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_tn2iu"]
+image = SubResource("Image_k4h7w")
 
 [node name="QuickAtlas" type="Control" node_paths=PackedStringArray("NoTargetOverlay", "TexturePreviewArea", "PreviewControls", "PreviewContainer", "FileDialog", "ConfirmationDialog", "ErrorDialog", "SubTexturePreviewArea", "ResourceName", "RegionX", "RegionY", "RegionW", "RegionH", "MarginX", "MarginY", "MarginW", "MarginH", "FilterClip")]
 layout_mode = 3
@@ -18,9 +31,9 @@ grow_vertical = 2
 focus_mode = 1
 script = ExtResource("1_cb2dl")
 NoTargetOverlay = NodePath("NothingSelectedOverlay")
-TexturePreviewArea = NodePath("VSplitContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview")
-PreviewControls = NodePath("VSplitContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls")
-PreviewContainer = NodePath("VSplitContainer/AtlasPreviewContainer")
+TexturePreviewArea = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview")
+PreviewControls = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls")
+PreviewContainer = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer")
 FileDialog = NodePath("FileDialog")
 ConfirmationDialog = NodePath("ConfirmationDialog")
 ErrorDialog = NodePath("ErrorDialog")
@@ -44,14 +57,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="AtlasPreviewContainer" type="ScrollContainer" parent="VSplitContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AtlasPreviewContainer" type="ScrollContainer" parent="VSplitContainer/PanelContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 2
 mouse_default_cursor_shape = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_hu7o0")
 
-[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/AtlasPreviewContainer" node_paths=PackedStringArray("RelayTarget")]
+[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer" node_paths=PackedStringArray("RelayTarget")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 mouse_filter = 0
@@ -62,14 +79,14 @@ theme_override_constants/margin_bottom = 100
 script = ExtResource("2_v703o")
 RelayTarget = NodePath("AtlasPreview/Controls")
 
-[node name="AtlasPreview" type="TextureRect" parent="VSplitContainer/AtlasPreviewContainer/MarginContainer"]
+[node name="AtlasPreview" type="TextureRect" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer"]
 layout_mode = 2
 mouse_filter = 0
 mouse_force_pass_scroll_events = false
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Controls" type="Control" parent="VSplitContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview" node_paths=PackedStringArray("window", "ScrollArea", "TexturePreviewArea", "PreviewAreaMargin")]
+[node name="Controls" type="Control" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview" node_paths=PackedStringArray("window", "ScrollArea", "TexturePreviewArea", "PreviewAreaMargin", "ZoomLevelLabel")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -78,10 +95,33 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_force_pass_scroll_events = false
 script = ExtResource("3_mqi3u")
-window = NodePath("../../../../..")
+window = NodePath("../../../../../..")
 ScrollArea = NodePath("../../..")
 TexturePreviewArea = NodePath("..")
 PreviewAreaMargin = NodePath("../..")
+ZoomLevelLabel = NodePath("../../../../HBoxContainer/ZoomValue")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="ZoomOut" type="Button" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+icon = SubResource("ImageTexture_tn2iu")
+script = ExtResource("4_nfg46")
+EditorIconName = "ZoomLess"
+
+[node name="ZoomValue" type="Label" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "100%"
+
+[node name="ZoomIn" type="Button" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+icon = SubResource("ImageTexture_tn2iu")
+script = ExtResource("4_nfg46")
+EditorIconName = "ZoomMore"
 
 [node name="MainControlsContainer" type="VBoxContainer" parent="VSplitContainer"]
 layout_mode = 2
@@ -310,6 +350,8 @@ initial_position = 2
 size = Vector2i(400, 100)
 dialog_text = "Cannot write file cuz u dun goofed or something!"
 
+[connection signal="pressed" from="VSplitContainer/PanelContainer/HBoxContainer/ZoomOut" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnZoomOutPressed"]
+[connection signal="pressed" from="VSplitContainer/PanelContainer/HBoxContainer/ZoomIn" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnZoomInPressed"]
 [connection signal="text_submitted" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_OnResourcePathChangeSubmit"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/NextButton" to="." method="_OnRenamePressed"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/PreviousButton" to="." method="_OnDeletePressed"]

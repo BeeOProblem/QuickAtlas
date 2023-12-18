@@ -26,6 +26,8 @@ public partial class AtlasPreviewControls : Control
     TextureRect TexturePreviewArea;
     [Export]
     MarginContainer PreviewAreaMargin;
+    [Export]
+    Label ZoomLevelLabel;
 
     [Export]
     int MaxZoomPercent = 400;
@@ -145,6 +147,16 @@ public partial class AtlasPreviewControls : Control
         }
     }
 
+    private void _OnZoomInPressed()
+    {
+        ChangeZoom(ZoomPercentIncrement);
+    }
+
+    private void _OnZoomOutPressed()
+    {
+        ChangeZoom(-ZoomPercentIncrement);
+    }
+
     /// <summary>
     /// Center the selected AtlasTexture region in the preview area
     /// </summary>
@@ -225,6 +237,8 @@ public partial class AtlasPreviewControls : Control
         PreviewAreaMargin.AddThemeConstantOverride("margin_right", (int)halfSize.X);
         PreviewAreaMargin.AddThemeConstantOverride("margin_top", (int)halfSize.Y);
         PreviewAreaMargin.AddThemeConstantOverride("margin_bottom", (int)halfSize.Y);
+
+        ZoomLevelLabel.Text = zoomScaleValue.ToString("P0");
     }
 
     private void DrawAtlasTextureControls(AtlasTextureEdits texture)
