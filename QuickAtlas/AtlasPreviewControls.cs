@@ -66,16 +66,10 @@ public partial class AtlasPreviewControls : Control
         zoomScaleValue = 1;
         zoomPercentage = 100;
 
-        if (sourceTexture != null)
-        {
-            // set margins so we can always center AtlasTexture regions in the preview area
-            Vector2 halfSize = sourceTexture.GetSize() * 0.5f;
-            PreviewAreaMargin.AddThemeConstantOverride("margin_left", (int)halfSize.X);
-            PreviewAreaMargin.AddThemeConstantOverride("margin_right", (int)halfSize.X);
-            PreviewAreaMargin.AddThemeConstantOverride("margin_top", (int)halfSize.Y);
-            PreviewAreaMargin.AddThemeConstantOverride("margin_bottom", (int)halfSize.Y);
-            PreviewAreaMargin.CustomMinimumSize = sourceTexture.GetSize() * 2;
-        }
+        // make sure margins and such are set up correctly
+        // even though margins only need to be set when resizing and when _Ready
+        // _Ready is called before our size is actually set properly
+        _OnScrollAreaSizeChanged();
 
         QueueRedraw();
 	}
@@ -144,6 +138,20 @@ public partial class AtlasPreviewControls : Control
                     AcceptEvent();
                 }
             }
+        }
+    }
+
+    private void _OnScrollAreaSizeChanged()
+    {
+        Vector2 halfSize = ScrollArea.Size * 0.5f;
+        PreviewAreaMargin.AddThemeConstantOverride("margin_left", (int)halfSize.X);
+        PreviewAreaMargin.AddThemeConstantOverride("margin_right", (int)halfSize.X);
+        PreviewAreaMargin.AddThemeConstantOverride("margin_top", (int)halfSize.Y);
+        PreviewAreaMargin.AddThemeConstantOverride("margin_bottom", (int)halfSize.Y);
+
+        if (TexturePreviewArea.Texture != null)
+        {
+            PreviewAreaMargin.CustomMinimumSize = TexturePreviewArea.Texture.GetSize() * zoomScaleValue + ScrollArea.Size;
         }
     }
 
@@ -230,13 +238,7 @@ public partial class AtlasPreviewControls : Control
         zoomPercentage += increment;
         zoomPercentage = Mathf.Clamp(zoomPercentage, MinZoomPercent, MaxZoomPercent);
         zoomScaleValue = zoomPercentage / 100.0f;
-        PreviewAreaMargin.CustomMinimumSize = TexturePreviewArea.Texture.GetSize() * 2 * zoomScaleValue;
-
-        Vector2 halfSize = TexturePreviewArea.Texture.GetSize() * 0.5f * zoomScaleValue;
-        PreviewAreaMargin.AddThemeConstantOverride("margin_left", (int)halfSize.X);
-        PreviewAreaMargin.AddThemeConstantOverride("margin_right", (int)halfSize.X);
-        PreviewAreaMargin.AddThemeConstantOverride("margin_top", (int)halfSize.Y);
-        PreviewAreaMargin.AddThemeConstantOverride("margin_bottom", (int)halfSize.Y);
+        PreviewAreaMargin.CustomMinimumSize = TexturePreviewArea.Texture.GetSize() * zoomScaleValue + ScrollArea.Size;
 
         ZoomLevelLabel.Text = zoomScaleValue.ToString("P0");
     }
