@@ -232,13 +232,24 @@ public partial class AtlasPreviewControls : Control
 
     private void ChangeZoom(int increment)
     {
+
         AcceptEvent();
         QueueRedraw();
 
+        float zoomScaleValueOld = zoomScaleValue;
         zoomPercentage += increment;
         zoomPercentage = Mathf.Clamp(zoomPercentage, MinZoomPercent, MaxZoomPercent);
         zoomScaleValue = zoomPercentage / 100.0f;
+
+        // since the margin and center are both equal to half the ScrollArea size
+        // compensating for both causes the values to cancel so the ScrollArea.Scroll... is the center
+        Vector2 scrollPosCenter = new Vector2(ScrollArea.ScrollHorizontal, ScrollArea.ScrollVertical);
+        Vector2 scrollPosScaledOld = scrollPosCenter / zoomScaleValueOld;
+        Vector2 scrollPosNew = scrollPosScaledOld * zoomScaleValue;
+
         PreviewAreaMargin.CustomMinimumSize = TexturePreviewArea.Texture.GetSize() * zoomScaleValue + ScrollArea.Size;
+        ScrollArea.SetDeferred("scroll_horizontal", (int)scrollPosNew.X);
+        ScrollArea.SetDeferred("scroll_vertical", (int)scrollPosNew.Y);
 
         ZoomLevelLabel.Text = zoomScaleValue.ToString("P0");
     }
