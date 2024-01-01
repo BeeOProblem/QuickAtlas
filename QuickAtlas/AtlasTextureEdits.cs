@@ -141,16 +141,16 @@ public class AtlasTextureEdits
     /// </summary>
     public void SaveResourceFile()
     {
+        ResourceSaver.SaverFlags saveFlags = ResourceSaver.SaverFlags.None;
         if (editedPath != ActualTexture.ResourcePath && !string.IsNullOrEmpty(ActualTexture.ResourcePath))
         {
             GD.Print("Rename/Move AtlasTexture " + ActualTexture.ResourcePath + " to " + editedPath);
             Directory.Move(ProjectSettings.GlobalizePath(ActualTexture.ResourcePath), ProjectSettings.GlobalizePath(editedPath));
+            saveFlags = ResourceSaver.SaverFlags.ChangePath | ResourceSaver.SaverFlags.ReplaceSubresourcePaths;
         }
 
         OriginalRegion = ActualTexture.Region;
-        ActualTexture.TakeOverPath(editedPath);
-        ActualTexture.ResourcePath = editedPath;
-        ResourceSaver.Save(ActualTexture, editedPath);
+        ResourceSaver.Save(ActualTexture, editedPath, saveFlags);
         GD.Print("Saved AtlasTexture " + ActualTexture.ResourcePath);
     }
 
