@@ -1,5 +1,4 @@
 ﻿using Godot;
-using System;
 using System.IO;
 
 /// <summary>
@@ -10,10 +9,25 @@ using System.IO;
 public class AtlasTextureEdits
 {
     // TODO: consider changing AtlasTextureEdits and Handles to nodes for easier(?) mouse handling
-    public AtlasTexture actualTexture;
     public Rect2[] Handles;
 
+    private AtlasTexture actualTexture;
     private string editedPath;
+
+    public AtlasTexture ActualTexture
+    {
+        get
+        {
+            return actualTexture;
+        }
+
+        set
+        {
+            actualTexture = value;
+            OriginalRegion = actualTexture.Region;
+            RecalculateHandles();
+        }
+    }
 
     /// <summary>
     /// Path of the texture. This does not update the actual resource path
@@ -39,12 +53,12 @@ public class AtlasTextureEdits
     {
         get
         {
-            return actualTexture.FilterClip;
+            return ActualTexture.FilterClip;
         }
 
         set
         {
-            actualTexture.FilterClip = value;
+            ActualTexture.FilterClip = value;
         }
     }
 
@@ -63,13 +77,13 @@ public class AtlasTextureEdits
     {
         get
         {
-            return actualTexture.Region;
+            return ActualTexture.Region;
         }
         set
         {
-            if (value != actualTexture.Region)
+            if (value != ActualTexture.Region)
             {
-                actualTexture.Region = value;
+                ActualTexture.Region = value;
                 RecalculateHandles();
             }
         }
@@ -82,12 +96,12 @@ public class AtlasTextureEdits
     {
         get
         {
-            return actualTexture.Margin;
+            return ActualTexture.Margin;
         }
 
         set
         {
-            actualTexture.Margin = value;
+            ActualTexture.Margin = value;
         }
     }
 
@@ -101,9 +115,9 @@ public class AtlasTextureEdits
     public AtlasTextureEdits(string initialPath, Rect2 initialRegion, Texture2D baseTexture)
     {
         OriginalRegion = initialRegion;
-        actualTexture = new AtlasTexture();
-        actualTexture.Atlas = baseTexture;
-        actualTexture.Region = initialRegion;
+        ActualTexture = new AtlasTexture();
+        ActualTexture.Atlas = baseTexture;
+        ActualTexture.Region = initialRegion;
         editedPath = initialPath;
         RecalculateHandles();
     }
@@ -114,7 +128,7 @@ public class AtlasTextureEdits
     /// <param name="texture"></param>
     public AtlasTextureEdits(AtlasTexture texture)
     {
-        actualTexture = texture;
+        ActualTexture = texture;
         editedPath = texture.ResourcePath;
         RecalculateHandles();
     }
@@ -127,17 +141,17 @@ public class AtlasTextureEdits
     /// </summary>
     public void SaveResourceFile()
     {
-        if (editedPath != actualTexture.ResourcePath && !string.IsNullOrEmpty(actualTexture.ResourcePath))
+        if (editedPath != ActualTexture.ResourcePath && !string.IsNullOrEmpty(ActualTexture.ResourcePath))
         {
-            GD.Print("Rename/Move AtlasTexture " + actualTexture.ResourcePath + " to " + editedPath);
-            Directory.Move(ProjectSettings.GlobalizePath(actualTexture.ResourcePath), ProjectSettings.GlobalizePath(editedPath));
+            GD.Print("Rename/Move AtlasTexture " + ActualTexture.ResourcePath + " to " + editedPath);
+            Directory.Move(ProjectSettings.GlobalizePath(ActualTexture.ResourcePath), ProjectSettings.GlobalizePath(editedPath));
         }
 
-        OriginalRegion = actualTexture.Region;
-        actualTexture.TakeOverPath(editedPath);
-        actualTexture.ResourcePath = editedPath;
-        ResourceSaver.Save(actualTexture, editedPath);
-        GD.Print("Saved AtlasTexture " + actualTexture.ResourcePath);
+        OriginalRegion = ActualTexture.Region;
+        ActualTexture.TakeOverPath(editedPath);
+        ActualTexture.ResourcePath = editedPath;
+        ResourceSaver.Save(ActualTexture, editedPath);
+        GD.Print("Saved AtlasTexture " + ActualTexture.ResourcePath);
     }
 
     /// <summary>

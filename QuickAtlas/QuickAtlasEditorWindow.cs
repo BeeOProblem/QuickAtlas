@@ -155,7 +155,6 @@ public partial class QuickAtlasEditorWindow : Control
             TexturePreviewArea.Texture = targetTexture;
 
             textureEdits.Clear();
-
             if (currentBaseTexture != null)
             {
                 string atlasSource = currentBaseTexture.ResourcePath;
@@ -206,7 +205,7 @@ public partial class QuickAtlasEditorWindow : Control
         { 
             for (int i = 0; i < textureEdits.Count; i++)
             {
-                if (textureEdits[i].actualTexture.ResourcePath == targetAsAtlas.ResourcePath)
+                if (textureEdits[i].ActualTexture.ResourcePath == targetAsAtlas.ResourcePath)
                 {
                     SelectedTexture = textureEdits[i];
                     PreviewControls.CallDeferred("CenterView");
@@ -699,6 +698,65 @@ public partial class QuickAtlasEditorWindow : Control
                 GD.Print("Failed to scan ", resourcePath, " ", e.GetType().ToString(), " ", e.Message);
             }
         }
+
+        // since Godot doesn't tell us what specifically changed reload everything and
+        // update any of our tracking that needs it
+        if (currentBaseTexture != null)
+        {
+            PreviewControls.QueueRedraw();
+
+            // BUG: This doesn't actually detect the base texture being deleted/renamed properly
+            //      since something in Godot makes the stale paths work automagically Github #27
+            // our base texture was renamed or deleted, clear everything
+            if (!textureAtlasRefs.ContainsKey(currentBaseTexture.ResourcePath))
+            {
+                GD.Print("Selected Atlas source lost. Clearing selection");
+                editorInterface.GetSelection().Clear();
+                return;
+            }
+
+            GD.Print("Re-scanning atlas textures from " + currentBaseTexture.ResourcePath);
+            List<string> textureNames = textureAtlasRefs[currentBaseTexture.ResourcePath];
+            foreach (string textureName in textureNames)
+            {
+                bool alreadyExists = false;
+                AtlasTexture newActualTexture = ResourceLoader.Load<AtlasTexture>(textureName);
+                foreach (AtlasTextureEdits edits in textureEdits)
+                {
+                    if(edits.ActualTexture.ResourcePath == newActualTexture.ResourcePath)
+                    {
+                        // TODO: make actualTexture a property and update stuff
+                        GD.Print("\tUPDATED " + textureName);
+                        edits.ActualTexture = newActualTexture;
+                        alreadyExists = true;
+                    }
+                }
+
+                if (!alreadyExists)
+                {
+                    GD.Print("\tADDED " + textureName);
+                    textureEdits.Add(new AtlasTextureEdits(newActualTexture));
+                }
+            }
+
+            // remove anything that may have been deleted or renamed
+            for(int i = 0; i < textureEdits.Count; i++)
+            {
+                AtlasTextureEdits edits = textureEdits[i];
+                if (!textureNames.Contains(edits.ActualTexture.ResourcePath))
+                {
+                    // our selected AtlasTexture was deleted or renamed, deselect
+                    if(SelectedTexture == edits)
+                    {
+                        SelectedTexture = null;
+                    }
+
+                    GD.Print("\tREMOVED " + edits.ActualTexture.ResourcePath);
+                    textureEdits.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -733,7 +791,7 @@ public partial class QuickAtlasEditorWindow : Control
     private void UpdateControlValues()
     {
         PreviewControls.QueueRedraw();
-        SubTexturePreviewArea.Texture = selectedAtlasTexture?.actualTexture;
+        SubTexturePreviewArea.Texture = selectedAtlasTexture?.ActualTexture;
         if (selectedAtlasTexture != null)
         {
             RegionX.SetValueNoSignal(selectedAtlasTexture.Region.Position.X);
