@@ -752,5 +752,21 @@ public partial class QuickAtlasEditorWindow : Control
             RegionW.MaxValue = currentBaseTexture.GetWidth() - selectedAtlasTexture.Region.Position.X;
             RegionH.MaxValue = currentBaseTexture.GetHeight() - selectedAtlasTexture.Region.Position.Y;
         }
+        else
+        {
+            RegionX.SetValueNoSignal(0);
+            RegionY.SetValueNoSignal(0);
+            RegionW.SetValueNoSignal(0);
+            RegionH.SetValueNoSignal(0);
+
+            MarginX.SetValueNoSignal(0);
+            MarginY.SetValueNoSignal(0);
+            MarginW.SetValueNoSignal(0);
+            MarginH.SetValueNoSignal(0);
+
+            FilterClip.SetPressedNoSignal(false);
+
+            ResourceName.Text = "";
+        }
     }
 }
