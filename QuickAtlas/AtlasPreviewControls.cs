@@ -1,6 +1,7 @@
 using Godot;
 using System.Collections.Generic;
 
+#if TOOLS
 /// <summary>
 /// Main script for the scrollable preview of the current source texture being
 /// used for creating/editing AtlasTexture resources. Draws boxes with handles
@@ -295,3 +296,4 @@ public partial class AtlasPreviewControls : Control
         }
     }
 }
+#endif

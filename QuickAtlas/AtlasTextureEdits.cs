@@ -1,6 +1,7 @@
 ﻿using Godot;
 using System.IO;
 
+#if TOOLS
 /// <summary>
 /// Used to track in-process modifications to an AtlasTexture resource before
 /// committing them to the filesystem and provides helper pseudo-control handles
@@ -336,4 +337,5 @@ public class AtlasTextureEdits
             };
     }
 }
+#endif
 

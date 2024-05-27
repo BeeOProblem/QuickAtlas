@@ -1,6 +1,7 @@
 using Godot;
 using System;
 
+#if TOOLS
 [Tool]
 public partial class GuiEventRelay : MarginContainer
 {
@@ -12,3 +13,4 @@ public partial class GuiEventRelay : MarginContainer
         RelayTarget._GuiInput(inputEvent);
     }
 }
+#endif

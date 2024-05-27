@@ -1,6 +1,7 @@
 using Godot;
 using System;
 
+#if TOOLS
 [Tool]
 public partial class UseEditorIcon : Button
 {
@@ -18,3 +19,4 @@ public partial class UseEditorIcon : Button
     {
     }
 }
+#endif
