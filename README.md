@@ -1,6 +1,9 @@
 # QuickAtlas - Faster AtlasTexture creation for Godot 4
 
-Use this plugin to create AtlasTexture resources from sprite sheets with a simple mouse-based UI.
+Version 0.3
+
+Use this plugin to create AtlasTexture resources from sprite sheets with a simple mouse-based UI. This
+plugin is loosely inspired by Unity 3D's sprite editor.
 
 ## How to use
  1) Copy the QuickAtlas directory to (your project)/addons
