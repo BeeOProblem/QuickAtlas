@@ -2,6 +2,7 @@ using Godot;
 using System.IO;
 using System.Collections.Generic;
 
+#if TOOLS
 [Tool]
 public partial class QuickAtlasEditorWindow : Control
 {
@@ -227,9 +228,12 @@ public partial class QuickAtlasEditorWindow : Control
     /// <returns></returns>
     public AtlasTextureEdits StartNewTexture(Vector2 position)
     {
-        newTextureCounter++;
+        string newTextureName;
+        do {
+            newTextureCounter++;
+            newTextureName = string.Format("{0}/new_atlas_texture_{1}.tres", basePath, newTextureCounter);
+        } while(ResourceLoader.Exists(newTextureName));
 
-        string newTextureName = string.Format("{0}/new_atlas_texture_{1}.tres", basePath, newTextureCounter);
         AtlasTextureEdits newTexture = new AtlasTextureEdits(newTextureName, new Rect2(position, Vector2.One), currentBaseTexture);
         textureEdits.Add(newTexture);
         return newTexture;
@@ -828,3 +832,4 @@ public partial class QuickAtlasEditorWindow : Control
         }
     }
 }
+#endif
