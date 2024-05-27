@@ -374,10 +374,14 @@ public partial class QuickAtlasEditorWindow : Control
         {
             if (textureEdits[i].ResourcePath == targetResourcePath)
             {
-                File.Delete(ProjectSettings.GlobalizePath(selectedAtlasTexture.ResourcePath));
-                textureAtlasRefs[currentBaseTexture.ResourcePath].Remove(selectedAtlasTexture.ResourcePath);
+                File.Delete(ProjectSettings.GlobalizePath(textureEdits[i].ResourcePath));
+                textureAtlasRefs[currentBaseTexture.ResourcePath].Remove(textureEdits[i].ResourcePath);
+                if (textureEdits[i] == selectedAtlasTexture)
+                {
+                    selectedAtlasTexture = null;
+                }
+
                 textureEdits.Remove(selectedAtlasTexture);
-                selectedAtlasTexture = null;
                 UpdateControlValues();
                 editorInterface.GetResourceFilesystem().Scan();
                 return;
