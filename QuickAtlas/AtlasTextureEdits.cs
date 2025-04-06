@@ -226,8 +226,8 @@ public class AtlasTextureEdits
     /// <param name="position"></param>
     public void MoveHandleTo(ref int handle, Vector2 position)
     {
-        // TODO: add dummy handle index to allow swapping selected handle with MAAAATH!!!
-        // TODO: disallow handles from being dragged outsize of the base texture's region
+        // TODO: add dummy handle index to allow swapping selected handle with MAAAATH!!! instead of big ifs
+        // #38 - TODO: disallow handles from being dragged outsize of the base texture's region
         Vector2 move = Vector2.Zero;
         Vector2 grow = Vector2.Zero;
         if (handle == 0 || handle == 3 || handle == 5)
@@ -301,9 +301,12 @@ public class AtlasTextureEdits
             }
         }
 
+        // #37 TODO: function to snap positions to grid instead of pixel
         Rect2 newRegion = Region;
         newRegion.Position += move;
         newRegion.Size += grow;
+        newRegion.Position = new Vector2(Mathf.Floor(newRegion.Position.X), Mathf.Floor(newRegion.Position.Y));
+        newRegion.Size = new Vector2(Mathf.Floor(newRegion.Size.X), Mathf.Floor(newRegion.Size.Y));
         Region = newRegion;
 
         RecalculateHandles();
