@@ -61,6 +61,11 @@ public partial class QuickAtlasEditorWindow : Control
     private AtlasTextureEdits selectedAtlasTexture;
     private List<AtlasTextureEdits> textureEdits;
 
+    // Fix for #34
+    // Godot will fire a bogus value changed event for the focused control reverting
+    // an unsignaled value change. This is indicate the signal should be ignored.
+    private bool hackForGodotBugSelectionChanged;
+
     public AtlasTextureEdits SelectedTexture
     {
         get
@@ -73,6 +78,7 @@ public partial class QuickAtlasEditorWindow : Control
             if (selectedAtlasTexture == value) return;
             selectedAtlasTexture = value;
             UpdateControlValues();
+            hackForGodotBugSelectionChanged = true;
         }
     }
 
@@ -456,6 +462,16 @@ public partial class QuickAtlasEditorWindow : Control
         }
     }
 
+    public override void _Process(double delta)
+    {
+        base._Process(delta);
+        if (hackForGodotBugSelectionChanged)
+        {
+            hackForGodotBugSelectionChanged = false;
+            return;
+        }
+    }
+
     /// <summary>
     /// Event handler. Called when Godot detects a change to the filesystem and is used
     /// to update internal tracking of associations between Texture2D resources and
@@ -544,6 +560,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedRegionX(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newRegion = selectedAtlasTexture.Region;
         newRegion.Position = new Vector2((float)value, newRegion.Position.Y);
         DoChangeRegionAction(newRegion);
@@ -555,6 +572,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedRegionY(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newRegion = selectedAtlasTexture.Region;
         newRegion.Position = new Vector2(newRegion.Position.X, (float)value);
         DoChangeRegionAction(newRegion);
@@ -566,6 +584,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedRegionW(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newRegion = selectedAtlasTexture.Region;
         newRegion.Size = new Vector2((float)value, newRegion.Size.Y);
         DoChangeRegionAction(newRegion);
@@ -577,6 +596,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedRegionH(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newRegion = selectedAtlasTexture.Region;
         newRegion.Size = new Vector2(newRegion.Size.X, (float)value);
         DoChangeRegionAction(newRegion);
@@ -588,6 +608,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedMarginX(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newMargin = selectedAtlasTexture.Margin;
         newMargin.Position = new Vector2((float)value, newMargin.Position.Y);
         DoChangeMarginAction(newMargin);
@@ -599,6 +620,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedMarginY(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newMargin = selectedAtlasTexture.Margin;
         newMargin.Position = new Vector2(newMargin.Position.X, (float)value);
         DoChangeMarginAction(newMargin);
@@ -610,6 +632,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedMarginW(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newMargin = selectedAtlasTexture.Margin;
         newMargin.Size = new Vector2((float)value, newMargin.Position.Y);
         DoChangeMarginAction(newMargin);
@@ -621,6 +644,7 @@ public partial class QuickAtlasEditorWindow : Control
     /// <param name="value"></param>
     private void _OnChangedMarginH(double value)
     {
+        if (hackForGodotBugSelectionChanged) return;
         Rect2 newMargin = selectedAtlasTexture.Margin;
         newMargin.Size = new Vector2(newMargin.Size.X, (float)value);
         DoChangeMarginAction(newMargin);
