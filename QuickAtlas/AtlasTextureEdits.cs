@@ -200,6 +200,13 @@ public class AtlasTextureEdits
     /// <param name="distance"></param>
     public void MoveRegion(Vector2 distance)
     {
+        // clamp movement such that the texture cannot be moved outside of its source atlas 
+        Vector2 atlasSize = actualTexture.Atlas.GetSize();
+        if (Region.Position.X < -distance.X) distance.X = -Region.Position.X;
+        if (Region.Position.Y < -distance.Y) distance.Y = -Region.Position.Y;
+        if (distance.X + Region.End.X >= atlasSize.X) distance.X = atlasSize.X - Region.End.X;
+        if (distance.Y + Region.End.Y >= atlasSize.Y) distance.Y = atlasSize.Y - Region.End.Y;
+
         Rect2 newRegion = Region;
         newRegion.Position += distance;
         Region = newRegion;

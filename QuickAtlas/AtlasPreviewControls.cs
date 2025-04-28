@@ -47,6 +47,7 @@ public partial class AtlasPreviewControls : Control
 
     private AtlasTextureEdits clickedTexture;
     private int clickedHandle;
+    private Vector2 clickedPointOnTexture;
 
     private int firstHandle;
     private Vector2 dragStart;
@@ -117,16 +118,29 @@ public partial class AtlasPreviewControls : Control
             {
                 if(clickedTexture != null)
                 {
+                    AcceptEvent();
                     if (clickedHandle < 0)
                     {
+                        // do not drag if off sprite sheet
+                        // otherwise if the mouse goes offscreen then back the sprite will move really far from the mouse
+                        if (motionEvent.Position.X < 0 || motionEvent.Position.Y < 0) return;
+                        if (motionEvent.Position.X >= TexturePreviewArea.Size.X || motionEvent.Position.Y >= TexturePreviewArea.Size.Y) return;
+
+                        // TODO: allow mouse to return to its original click position before moving if drag got clamped
                         clickedTexture.MoveRegion(motionEvent.Relative / zoomScaleValue);
                     }
                     else
                     {
-                        clickedTexture.MoveHandleTo(ref clickedHandle, motionEvent.Position / zoomScaleValue);
+                        // clamp mouse position to valid area for texture
+                        Vector2 mousePos = motionEvent.Position;
+                        if (mousePos.X < 0) mousePos.X = 0;
+                        if (mousePos.Y < 0) mousePos.Y = 0;
+                        if (mousePos.X >= TexturePreviewArea.Size.X) mousePos.X = TexturePreviewArea.Size.X - 1;
+                        if (mousePos.Y >= TexturePreviewArea.Size.Y) mousePos.Y = TexturePreviewArea.Size.Y - 1;
+
+                        clickedTexture.MoveHandleTo(ref clickedHandle, mousePos / zoomScaleValue);
                     }
 
-                    AcceptEvent();
                     QueueRedraw();
                 }
             }
@@ -188,12 +202,17 @@ public partial class AtlasPreviewControls : Control
 
         if (mouseEvent.Pressed)
         {
+            // do not start any operations if click is outside the texture area
+            if (mouseEvent.Position.X < 0 || mouseEvent.Position.Y < 0) return;
+            if (mouseEvent.Position.X >= TexturePreviewArea.Size.X || mouseEvent.Position.Y >= TexturePreviewArea.Size.Y) return;
+
             addingNewTexture = false;
             clickedTexture = null;
             foreach (AtlasTextureEdits texture in textures)
             {
                 if (texture.GetClickIfAny(mouseEvent.Position, zoomScaleValue, ref clickedHandle))
                 {
+                    clickedPointOnTexture = mouseEvent.Position - texture.Region.Position * zoomScaleValue;
                     clickedTexture = texture;
                     break;
                 }
@@ -213,6 +232,13 @@ public partial class AtlasPreviewControls : Control
         }
         else
         {
+            // clamp mouse position to valid area for texture
+            Vector2 mousePos = mouseEvent.Position;
+            if (mousePos.X < 0) mousePos.X = 0;
+            if (mousePos.Y < 0) mousePos.Y = 0;
+            if (mousePos.X >= TexturePreviewArea.Size.X) mousePos.X = TexturePreviewArea.Size.X - 1;
+            if (mousePos.Y >= TexturePreviewArea.Size.Y) mousePos.Y = TexturePreviewArea.Size.Y - 1;
+
             if (clickedTexture != null)
             {
                 if (addingNewTexture)
@@ -233,7 +259,6 @@ public partial class AtlasPreviewControls : Control
 
     private void ChangeZoom(int increment)
     {
-
         AcceptEvent();
         QueueRedraw();
 
