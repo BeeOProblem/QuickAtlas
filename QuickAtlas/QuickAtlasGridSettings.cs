@@ -37,6 +37,8 @@ public partial class QuickAtlasGridSettings : Node
     {
         SquareGrid.AddThemeIconOverride("checked", SquareGrid.GetThemeIcon("Instance", "EditorIcons"));
         SquareGrid.AddThemeIconOverride("unchecked", SquareGrid.GetThemeIcon("Unlinked", "EditorIcons"));
+        GridSizeX = (int)SizeX.Value;
+        GridSizeY = (int)SizeY.Value;
     }
 
     private void _SquareGridToggled(bool toggledOn)
