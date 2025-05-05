@@ -94,7 +94,7 @@ public partial class AtlasPreviewControls : Control
 
     public override void _GuiInput(InputEvent inputEvent)
     {
-		if(inputEvent is InputEventMouseButton)
+		if (inputEvent is InputEventMouseButton)
 		{
             InputEventMouseButton mouseEvent = (InputEventMouseButton)inputEvent;
             if (mouseEvent.ButtonIndex == MouseButton.Left)
@@ -127,7 +127,7 @@ public partial class AtlasPreviewControls : Control
                         if (motionEvent.Position.X >= TexturePreviewArea.Size.X || motionEvent.Position.Y >= TexturePreviewArea.Size.Y) return;
 
                         // TODO: allow mouse to return to its original click position before moving if drag got clamped
-                        clickedTexture.MoveRegion(motionEvent.Relative / zoomScaleValue);
+                        clickedTexture.MoveRegion(clickedPointOnTexture, motionEvent.Position / zoomScaleValue);
                     }
                     else
                     {

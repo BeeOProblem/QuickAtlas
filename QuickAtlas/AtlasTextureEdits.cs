@@ -106,6 +106,8 @@ public class AtlasTextureEdits
         }
     }
 
+    private QuickAtlasGridSettings gridSettings;
+
     /// <summary>
     /// Used when creating an entirely new AtlasTexture resource. This will not
     /// actually exist on the filesystem until SaveResourceFile is called
@@ -113,8 +115,10 @@ public class AtlasTextureEdits
     /// <param name="initialPath"></param>
     /// <param name="initialRegion"></param>
     /// <param name="baseTexture"></param>
-    public AtlasTextureEdits(string initialPath, Rect2 initialRegion, Texture2D baseTexture)
+    public AtlasTextureEdits(QuickAtlasGridSettings gridSettings, string initialPath, Rect2 initialRegion, Texture2D baseTexture)
     {
+        this.gridSettings = gridSettings;
+
         OriginalRegion = initialRegion;
         ActualTexture = new AtlasTexture();
         ActualTexture.Atlas = baseTexture;
@@ -127,8 +131,10 @@ public class AtlasTextureEdits
     /// Used when tracking changes to an already existing AtlasTexture resource
     /// </summary>
     /// <param name="texture"></param>
-    public AtlasTextureEdits(AtlasTexture texture)
+    public AtlasTextureEdits(QuickAtlasGridSettings gridSettings, AtlasTexture texture)
     {
+        this.gridSettings = gridSettings;
+
         ActualTexture = texture;
         editedPath = texture.ResourcePath;
         RecalculateHandles();
@@ -198,8 +204,10 @@ public class AtlasTextureEdits
     /// Move the entire region the specified amount. No size change. Updates drag handle positions.
     /// </summary>
     /// <param name="distance"></param>
-    public void MoveRegion(Vector2 distance)
+    public void MoveRegion(Vector2 offset, Vector2 positionOnAtlas)
     {
+        Vector2 distance = positionOnAtlas - (Region.Position + offset);
+
         // clamp movement such that the texture cannot be moved outside of its source atlas 
         Vector2 atlasSize = actualTexture.Atlas.GetSize();
         if (Region.Position.X < -distance.X) distance.X = -Region.Position.X;
@@ -207,8 +215,12 @@ public class AtlasTextureEdits
         if (distance.X + Region.End.X >= atlasSize.X) distance.X = atlasSize.X - Region.End.X;
         if (distance.Y + Region.End.Y >= atlasSize.Y) distance.Y = atlasSize.Y - Region.End.Y;
 
+        // force movement to keep corner of region aligned with the grid
+        Vector2 newPosition = Region.Position + distance;
+        SnapPositionToGrid(ref newPosition);
+
         Rect2 newRegion = Region;
-        newRegion.Position += distance;
+        newRegion.Position = newPosition;
         Region = newRegion;
         RecalculateHandles();
     }
@@ -234,9 +246,12 @@ public class AtlasTextureEdits
     public void MoveHandleTo(ref int handle, Vector2 position)
     {
         // TODO: add dummy handle index to allow swapping selected handle with MAAAATH!!! instead of big ifs
-        // #38 - TODO: disallow handles from being dragged outsize of the base texture's region
         Vector2 move = Vector2.Zero;
         Vector2 grow = Vector2.Zero;
+
+        // force position to nearest grid coordinate if snap is on or nearest pixel if not
+        SnapPositionToGrid(ref position);
+
         if (handle == 0 || handle == 3 || handle == 5)
         {
             // dragging the left around
@@ -308,15 +323,24 @@ public class AtlasTextureEdits
             }
         }
 
-        // #37 TODO: function to snap positions to grid instead of pixel
         Rect2 newRegion = Region;
         newRegion.Position += move;
         newRegion.Size += grow;
-        newRegion.Position = new Vector2(Mathf.Floor(newRegion.Position.X), Mathf.Floor(newRegion.Position.Y));
-        newRegion.Size = new Vector2(Mathf.Floor(newRegion.Size.X), Mathf.Floor(newRegion.Size.Y));
         Region = newRegion;
-
         RecalculateHandles();
+    }
+
+    private void SnapPositionToGrid(ref Vector2 position)
+    {
+        Vector2 gridSnap = Vector2.One;
+        if (gridSettings.SnapToGrid)
+        {
+            gridSnap = new Vector2(gridSettings.GridSizeX, gridSettings.GridSizeY);
+        }
+
+        // gross hack, floor will cause undesired movement if position is already grid aligned
+        position.X = Mathf.Floor(position.X / gridSnap.X) * gridSnap.X;
+        position.Y = Mathf.Floor(position.Y / gridSnap.Y) * gridSnap.Y;
     }
 
     /// <summary>

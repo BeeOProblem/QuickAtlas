@@ -13,6 +13,8 @@ public partial class QuickAtlasEditorWindow : Control
     TextureRect TexturePreviewArea;
 
     [Export]
+    QuickAtlasGridSettings GridSettings;
+    [Export]
     AtlasPreviewControls PreviewControls;
     [Export]
     ScrollContainer PreviewContainer;
@@ -171,7 +173,7 @@ public partial class QuickAtlasEditorWindow : Control
                 foreach (string textureName in textureNames)
                 {
                     GD.Print("\t" + textureName);
-                    textureEdits.Add(new AtlasTextureEdits(ResourceLoader.Load<AtlasTexture>(textureName)));
+                    textureEdits.Add(new AtlasTextureEdits(GridSettings, ResourceLoader.Load<AtlasTexture>(textureName)));
                 }
             }
 
@@ -240,7 +242,7 @@ public partial class QuickAtlasEditorWindow : Control
             newTextureName = string.Format("{0}/new_atlas_texture_{1}.tres", basePath, newTextureCounter);
         } while(ResourceLoader.Exists(newTextureName));
 
-        AtlasTextureEdits newTexture = new AtlasTextureEdits(newTextureName, new Rect2(position, Vector2.One), currentBaseTexture);
+        AtlasTextureEdits newTexture = new AtlasTextureEdits(GridSettings, newTextureName, new Rect2(position, Vector2.One), currentBaseTexture);
         textureEdits.Add(newTexture);
         return newTexture;
     }
@@ -300,7 +302,7 @@ public partial class QuickAtlasEditorWindow : Control
 
         if (newTexture == null)
         {
-            newTexture = new AtlasTextureEdits(newResourcePath, newRegion, currentBaseTexture);
+            newTexture = new AtlasTextureEdits(GridSettings, newResourcePath, newRegion, currentBaseTexture);
             textureEdits.Add(newTexture);
         }
 
@@ -767,7 +769,7 @@ public partial class QuickAtlasEditorWindow : Control
                 if (!alreadyExists)
                 {
                     GD.Print("\tADDED " + textureName);
-                    textureEdits.Add(new AtlasTextureEdits(newActualTexture));
+                    textureEdits.Add(new AtlasTextureEdits(GridSettings, newActualTexture));
                 }
             }
 

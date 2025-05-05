@@ -1,26 +1,27 @@
-[gd_scene load_steps=8 format=3 uid="uid://cbkh0568n1vq4"]
+[gd_scene load_steps=9 format=3 uid="uid://cbkh0568n1vq4"]
 
-[ext_resource type="Script" path="res://addons/QuickAtlas/QuickAtlasEditorWindow.cs" id="1_cb2dl"]
-[ext_resource type="Script" path="res://addons/QuickAtlas/GuiEventRelay.cs" id="2_v703o"]
-[ext_resource type="Script" path="res://addons/QuickAtlas/AtlasPreviewControls.cs" id="3_mqi3u"]
-[ext_resource type="Script" path="res://addons/QuickAtlas/UseEditorIcon.cs" id="4_nfg46"]
+[ext_resource type="Script" uid="uid://octqd8smmhfd" path="res://addons/QuickAtlas/QuickAtlasEditorWindow.cs" id="1_cb2dl"]
+[ext_resource type="Script" uid="uid://dt4iggomenorp" path="res://addons/QuickAtlas/GuiEventRelay.cs" id="2_v703o"]
+[ext_resource type="Script" uid="uid://day0axxlf5ffe" path="res://addons/QuickAtlas/AtlasPreviewControls.cs" id="3_mqi3u"]
+[ext_resource type="Script" uid="uid://cwskgoobom62u" path="res://addons/QuickAtlas/UseEditorIcon.cs" id="4_nfg46"]
+[ext_resource type="Script" uid="uid://cde4uacfo8xrw" path="res://addons/QuickAtlas/QuickAtlasGridSettings.cs" id="5_13bpe"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hu7o0"]
 bg_color = Color(0.128906, 0.148438, 0.179688, 1)
 
-[sub_resource type="Image" id="Image_3uhdx"]
+[sub_resource type="Image" id="Image_13bpe"]
 data = {
-"data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 93, 93, 41, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
+"data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
 "format": "RGBA8",
 "height": 16,
 "mipmaps": false,
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_nwffx"]
-image = SubResource("Image_3uhdx")
+[sub_resource type="ImageTexture" id="ImageTexture_ukcqq"]
+image = SubResource("Image_13bpe")
 
-[node name="QuickAtlas" type="Control" node_paths=PackedStringArray("NoTargetOverlay", "TexturePreviewArea", "PreviewControls", "PreviewContainer", "FileDialog", "ConfirmationDialog", "ErrorDialog", "SubTexturePreviewArea", "ResourceName", "RegionX", "RegionY", "RegionW", "RegionH", "MarginX", "MarginY", "MarginW", "MarginH", "FilterClip")]
+[node name="QuickAtlas" type="Control" node_paths=PackedStringArray("NoTargetOverlay", "TexturePreviewArea", "GridSettings", "PreviewControls", "PreviewContainer", "FileDialog", "ConfirmationDialog", "ErrorDialog", "SubTexturePreviewArea", "ResourceName", "RegionX", "RegionY", "RegionW", "RegionH", "MarginX", "MarginY", "MarginW", "MarginH", "FilterClip")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -31,6 +32,7 @@ focus_mode = 1
 script = ExtResource("1_cb2dl")
 NoTargetOverlay = NodePath("NothingSelectedOverlay")
 TexturePreviewArea = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview")
+GridSettings = NodePath("VSplitContainer/PanelContainer/HBoxContainer/GridSettings")
 PreviewControls = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls")
 PreviewContainer = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer")
 FileDialog = NodePath("FileDialog")
@@ -71,10 +73,10 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_hu7o0")
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 mouse_filter = 0
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_top = 4
-theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 4
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
 script = ExtResource("2_v703o")
 RelayTarget = NodePath("AtlasPreview/Controls")
 
@@ -107,7 +109,7 @@ size_flags_vertical = 0
 [node name="ZoomOut" type="Button" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-icon = SubResource("ImageTexture_nwffx")
+icon = SubResource("ImageTexture_ukcqq")
 script = ExtResource("4_nfg46")
 EditorIconName = "ZoomLess"
 
@@ -118,9 +120,61 @@ text = "100%"
 [node name="ZoomIn" type="Button" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-icon = SubResource("ImageTexture_nwffx")
+icon = SubResource("ImageTexture_ukcqq")
 script = ExtResource("4_nfg46")
 EditorIconName = "ZoomMore"
+
+[node name="CenterPadding" type="Control" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="GridSettings" type="Node" parent="VSplitContainer/PanelContainer/HBoxContainer" node_paths=PackedStringArray("SizeX", "SizeY", "Snap", "SquareGrid")]
+script = ExtResource("5_13bpe")
+SizeX = NodePath("../GridX")
+SizeY = NodePath("../GridY")
+Snap = NodePath("../GridSnap")
+SquareGrid = NodePath("../LockSizeAxes")
+
+[node name="GridSnap" type="CheckButton" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Snap to Grid"
+
+[node name="GridXLabel" type="Label" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "X"
+
+[node name="GridX" type="SpinBox" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 256.0
+page = 8.0
+value = 1.0
+rounded = true
+suffix = "px"
+custom_arrow_step = 1.0
+
+[node name="GridXLabel2" type="Label" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Y"
+
+[node name="GridY" type="SpinBox" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+min_value = 1.0
+max_value = 256.0
+page = 8.0
+value = 1.0
+rounded = true
+allow_greater = true
+suffix = "px"
+custom_arrow_step = 1.0
+
+[node name="LockSizeAxes" type="CheckBox" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+button_pressed = true
+
+[node name="ScrollbarPad" type="Control" parent="VSplitContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
 
 [node name="MainControlsContainer" type="VBoxContainer" parent="VSplitContainer"]
 layout_mode = 2
@@ -186,6 +240,7 @@ text = "x"
 [node name="X" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
@@ -198,6 +253,7 @@ text = "y"
 [node name="Y" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
@@ -210,6 +266,7 @@ text = "w"
 [node name="W" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer"]
 layout_mode = 2
@@ -222,6 +279,7 @@ text = "h"
 [node name="H" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="MarginSection" type="VBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin"]
 custom_minimum_size = Vector2(256, 0)
@@ -246,6 +304,7 @@ text = "x"
 [node name="X" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="YContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
 layout_mode = 2
@@ -258,6 +317,7 @@ text = "y"
 [node name="Y" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="WContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
 layout_mode = 2
@@ -270,6 +330,7 @@ text = "w"
 [node name="W" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="HContainer" type="HBoxContainer" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer"]
 layout_mode = 2
@@ -282,6 +343,7 @@ text = "h"
 [node name="H" type="SpinBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer"]
 custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
+suffix = "px"
 
 [node name="FilterClipCheckbox" type="CheckBox" parent="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties"]
 layout_mode = 2
@@ -351,6 +413,9 @@ dialog_text = "Cannot write file cuz u dun goofed or something!"
 [connection signal="item_rect_changed" from="VSplitContainer/PanelContainer" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnScrollAreaSizeChanged"]
 [connection signal="pressed" from="VSplitContainer/PanelContainer/HBoxContainer/ZoomOut" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnZoomOutPressed"]
 [connection signal="pressed" from="VSplitContainer/PanelContainer/HBoxContainer/ZoomIn" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnZoomInPressed"]
+[connection signal="toggled" from="VSplitContainer/PanelContainer/HBoxContainer/GridSnap" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_SquareGridToggled"]
+[connection signal="value_changed" from="VSplitContainer/PanelContainer/HBoxContainer/GridX" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_ChangedGridX"]
+[connection signal="value_changed" from="VSplitContainer/PanelContainer/HBoxContainer/GridY" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_ChangedGridY"]
 [connection signal="text_submitted" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_OnResourcePathChangeSubmit"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/NextButton" to="." method="_OnRenamePressed"]
 [connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/PreviousButton" to="." method="_OnDeletePressed"]
