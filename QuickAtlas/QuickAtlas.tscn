@@ -1,27 +1,19 @@
-[gd_scene load_steps=9 format=3 uid="uid://cbkh0568n1vq4"]
+[gd_scene load_steps=8 format=3 uid="uid://dsd7hw57yxe7g"]
 
-[ext_resource type="Script" uid="uid://octqd8smmhfd" path="res://addons/QuickAtlas/QuickAtlasEditorWindow.cs" id="1_cb2dl"]
-[ext_resource type="Script" uid="uid://dt4iggomenorp" path="res://addons/QuickAtlas/GuiEventRelay.cs" id="2_v703o"]
-[ext_resource type="Script" uid="uid://day0axxlf5ffe" path="res://addons/QuickAtlas/AtlasPreviewControls.cs" id="3_mqi3u"]
-[ext_resource type="Script" uid="uid://cwskgoobom62u" path="res://addons/QuickAtlas/UseEditorIcon.cs" id="4_nfg46"]
-[ext_resource type="Script" uid="uid://cde4uacfo8xrw" path="res://addons/QuickAtlas/QuickAtlasGridSettings.cs" id="5_13bpe"]
+[ext_resource type="Script" uid="uid://b5m4n2es2qbjj" path="res://addons/GDQuickAtlas/quick_atlas_editor_window.gd" id="1_6xtva"]
+[ext_resource type="Script" uid="uid://bh7asb37157sk" path="res://addons/GDQuickAtlas/gui_event_relay.gd" id="2_6xtva"]
+[ext_resource type="Script" uid="uid://cqlt76xel62he" path="res://addons/GDQuickAtlas/quick_atlas_preview_controls.gd" id="3_edlrl"]
+[ext_resource type="Script" uid="uid://c01qr6edt8axo" path="res://addons/GDQuickAtlas/use_editor_icon.gd" id="4_6xtva"]
+[ext_resource type="Script" uid="uid://c2rgu5b6lcgr1" path="res://addons/GDQuickAtlas/quick_atlas_grid_settings.gd" id="5_wyg6k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hu7o0"]
 bg_color = Color(0.128906, 0.148438, 0.179688, 1)
 
-[sub_resource type="Image" id="Image_13bpe"]
-data = {
-"data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
-"format": "RGBA8",
-"height": 16,
-"mipmaps": false,
-"width": 16
-}
+[sub_resource type="DPITexture" id="DPITexture_6xtva"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
-[sub_resource type="ImageTexture" id="ImageTexture_ukcqq"]
-image = SubResource("Image_13bpe")
-
-[node name="QuickAtlas" type="Control" node_paths=PackedStringArray("NoTargetOverlay", "TexturePreviewArea", "GridSettings", "PreviewControls", "PreviewContainer", "FileDialog", "ConfirmationDialog", "ErrorDialog", "SubTexturePreviewArea", "ResourceName", "RegionX", "RegionY", "RegionW", "RegionH", "MarginX", "MarginY", "MarginW", "MarginH", "FilterClip")]
+[node name="QuickAtlas" type="Control" node_paths=PackedStringArray("no_target_overlay", "texture_preview_area", "grid_settings", "preview_controls", "preview_container", "file_dialog", "confirmation_dialog", "error_dialog", "sub_texture_preview_area", "resource_name", "region_x", "region_y", "region_w", "region_h", "margin_x", "margin_y", "margin_w", "margin_h", "filter_clip")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,26 +21,26 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 1
-script = ExtResource("1_cb2dl")
-NoTargetOverlay = NodePath("NothingSelectedOverlay")
-TexturePreviewArea = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview")
-GridSettings = NodePath("VSplitContainer/PanelContainer/HBoxContainer/GridSettings")
-PreviewControls = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls")
-PreviewContainer = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer")
-FileDialog = NodePath("FileDialog")
-ConfirmationDialog = NodePath("ConfirmationDialog")
-ErrorDialog = NodePath("ErrorDialog")
-SubTexturePreviewArea = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection/RegionPreviewContainer/RegionPreview")
-ResourceName = NodePath("VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit")
-RegionX = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer/X")
-RegionY = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2/Y")
-RegionW = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3/W")
-RegionH = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4/H")
-MarginX = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer/X")
-MarginY = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer/Y")
-MarginW = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer/W")
-MarginH = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer/H")
-FilterClip = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/FilterClipCheckbox")
+script = ExtResource("1_6xtva")
+no_target_overlay = NodePath("NothingSelectedOverlay")
+texture_preview_area = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview")
+grid_settings = NodePath("VSplitContainer/PanelContainer/HBoxContainer/GridSettings")
+preview_controls = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls")
+preview_container = NodePath("VSplitContainer/PanelContainer/AtlasPreviewContainer")
+file_dialog = NodePath("FileDialog")
+confirmation_dialog = NodePath("ConfirmationDialog")
+error_dialog = NodePath("ErrorDialog")
+sub_texture_preview_area = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/PreviewSection/RegionPreviewContainer/RegionPreview")
+resource_name = NodePath("VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit")
+region_x = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer/X")
+region_y = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2/Y")
+region_w = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3/W")
+region_h = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4/H")
+margin_x = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer/X")
+margin_y = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer/Y")
+margin_w = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer/W")
+margin_h = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer/H")
+filter_clip = NodePath("VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/FilterClipCheckbox")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="."]
 layout_mode = 1
@@ -69,7 +61,7 @@ focus_mode = 2
 mouse_default_cursor_shape = 8
 theme_override_styles/panel = SubResource("StyleBoxFlat_hu7o0")
 
-[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer" node_paths=PackedStringArray("RelayTarget")]
+[node name="MarginContainer" type="MarginContainer" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer" node_paths=PackedStringArray("relay_target")]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 mouse_filter = 0
@@ -77,8 +69,8 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-script = ExtResource("2_v703o")
-RelayTarget = NodePath("AtlasPreview/Controls")
+script = ExtResource("2_6xtva")
+relay_target = NodePath("AtlasPreview/Controls")
 
 [node name="AtlasPreview" type="TextureRect" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer"]
 layout_mode = 2
@@ -87,7 +79,7 @@ mouse_force_pass_scroll_events = false
 expand_mode = 1
 stretch_mode = 4
 
-[node name="Controls" type="Control" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview" node_paths=PackedStringArray("window", "ScrollArea", "TexturePreviewArea", "PreviewAreaMargin", "ZoomLevelLabel")]
+[node name="Controls" type="Control" parent="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview" node_paths=PackedStringArray("window", "scroll_area", "texture_preview_area", "preview_area_margin", "zoom_level_label")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -95,12 +87,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_force_pass_scroll_events = false
-script = ExtResource("3_mqi3u")
+script = ExtResource("3_edlrl")
 window = NodePath("../../../../../..")
-ScrollArea = NodePath("../../..")
-TexturePreviewArea = NodePath("..")
-PreviewAreaMargin = NodePath("../..")
-ZoomLevelLabel = NodePath("../../../../HBoxContainer/ZoomValue")
+scroll_area = NodePath("../../..")
+texture_preview_area = NodePath("..")
+preview_area_margin = NodePath("../..")
+zoom_level_label = NodePath("../../../../HBoxContainer/ZoomValue")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VSplitContainer/PanelContainer"]
 layout_mode = 2
@@ -109,9 +101,9 @@ size_flags_vertical = 0
 [node name="ZoomOut" type="Button" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-icon = SubResource("ImageTexture_ukcqq")
-script = ExtResource("4_nfg46")
-EditorIconName = "ZoomLess"
+icon = SubResource("DPITexture_6xtva")
+script = ExtResource("4_6xtva")
+icon_name = "ZoomLess"
 
 [node name="ZoomValue" type="Label" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -120,20 +112,20 @@ text = "100%"
 [node name="ZoomIn" type="Button" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-icon = SubResource("ImageTexture_ukcqq")
-script = ExtResource("4_nfg46")
-EditorIconName = "ZoomMore"
+icon = SubResource("DPITexture_6xtva")
+script = ExtResource("4_6xtva")
+icon_name = "ZoomMore"
 
 [node name="CenterPadding" type="Control" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GridSettings" type="Node" parent="VSplitContainer/PanelContainer/HBoxContainer" node_paths=PackedStringArray("SizeX", "SizeY", "Snap", "SquareGrid")]
-script = ExtResource("5_13bpe")
-SizeX = NodePath("../GridX")
-SizeY = NodePath("../GridY")
-Snap = NodePath("../GridSnap")
-SquareGrid = NodePath("../LockSizeAxes")
+[node name="GridSettings" type="Node" parent="VSplitContainer/PanelContainer/HBoxContainer" node_paths=PackedStringArray("size_x", "size_y", "snap", "square_grid")]
+script = ExtResource("5_wyg6k")
+size_x = NodePath("../GridX")
+size_y = NodePath("../GridY")
+snap = NodePath("../GridSnap")
+square_grid = NodePath("../LockSizeAxes")
 
 [node name="GridSnap" type="CheckButton" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
@@ -170,6 +162,8 @@ custom_arrow_step = 1.0
 
 [node name="LockSizeAxes" type="CheckBox" parent="VSplitContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_icons/checked = SubResource("DPITexture_6xtva")
+theme_override_icons/unchecked = SubResource("DPITexture_6xtva")
 button_pressed = true
 
 [node name="ScrollbarPad" type="Control" parent="VSplitContainer/PanelContainer/HBoxContainer"]
@@ -413,21 +407,22 @@ dialog_text = "Cannot write file cuz u dun goofed or something!"
 [connection signal="item_rect_changed" from="VSplitContainer/PanelContainer" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnScrollAreaSizeChanged"]
 [connection signal="pressed" from="VSplitContainer/PanelContainer/HBoxContainer/ZoomOut" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnZoomOutPressed"]
 [connection signal="pressed" from="VSplitContainer/PanelContainer/HBoxContainer/ZoomIn" to="VSplitContainer/PanelContainer/AtlasPreviewContainer/MarginContainer/AtlasPreview/Controls" method="_OnZoomInPressed"]
-[connection signal="toggled" from="VSplitContainer/PanelContainer/HBoxContainer/GridSnap" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_SquareGridToggled"]
-[connection signal="value_changed" from="VSplitContainer/PanelContainer/HBoxContainer/GridX" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_ChangedGridX"]
-[connection signal="value_changed" from="VSplitContainer/PanelContainer/HBoxContainer/GridY" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_ChangedGridY"]
-[connection signal="text_submitted" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_OnResourcePathChangeSubmit"]
-[connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/NextButton" to="." method="_OnRenamePressed"]
-[connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/PreviousButton" to="." method="_OnDeletePressed"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer/X" to="." method="_OnChangedRegionX"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2/Y" to="." method="_OnChangedRegionY"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3/W" to="." method="_OnChangedRegionW"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4/H" to="." method="_OnChangedRegionH"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer/X" to="." method="_OnChangedMarginX"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer/Y" to="." method="_OnChangedMarginY"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer/W" to="." method="_OnChangedMarginW"]
-[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer/H" to="." method="_OnChangedMarginH"]
-[connection signal="toggled" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/FilterClipCheckbox" to="." method="_OnFilterClipCheckboxToggled"]
-[connection signal="file_selected" from="FileDialog" to="." method="_OnFileDialogSelected"]
-[connection signal="canceled" from="ConfirmationDialog" to="." method="_OnCancelled"]
-[connection signal="confirmed" from="ConfirmationDialog" to="." method="_OnConfirmed"]
+[connection signal="toggled" from="VSplitContainer/PanelContainer/HBoxContainer/GridSnap" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_snap_toggled"]
+[connection signal="value_changed" from="VSplitContainer/PanelContainer/HBoxContainer/GridX" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_changed_grid_x"]
+[connection signal="value_changed" from="VSplitContainer/PanelContainer/HBoxContainer/GridY" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_changed_grid_y"]
+[connection signal="toggled" from="VSplitContainer/PanelContainer/HBoxContainer/LockSizeAxes" to="VSplitContainer/PanelContainer/HBoxContainer/GridSettings" method="_square_grid_toggled"]
+[connection signal="text_submitted" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/ResPathEdit" to="." method="_on_resource_path_change_submit"]
+[connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/NextButton" to="." method="_on_rename_pressed"]
+[connection signal="pressed" from="VSplitContainer/MainControlsContainer/ResourceInfoContainer/PreviousButton" to="." method="_on_delete_pressed"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer/X" to="." method="_on_changed_region_x"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer2/Y" to="." method="_on_changed_region_y"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer3/W" to="." method="_on_changed_region_w"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/RegionSection/RegionContainer/HBoxContainer4/H" to="." method="_on_changed_region_h"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/XContainer/X" to="." method="_on_changed_margin_x"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/YContainer/Y" to="." method="_on_changed_margin_y"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/WContainer/W" to="." method="_on_changed_margin_w"]
+[connection signal="value_changed" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/RegionAndMargin/MarginSection/MarginContainer/HContainer/H" to="." method="_on_changed_margin_h"]
+[connection signal="toggled" from="VSplitContainer/MainControlsContainer/PropertiesAndAtlasTexturePreview/AtlasTextureProperties/FilterClipCheckbox" to="." method="_on_filter_clip_checkbox_toggled"]
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_selected"]
+[connection signal="canceled" from="ConfirmationDialog" to="." method="_on_cancelled"]
+[connection signal="confirmed" from="ConfirmationDialog" to="." method="_on_confirmed"]
